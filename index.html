@@ -51,7 +51,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo & Brand -->
-                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('dashboard')">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="handleLogoClick()">
                     <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/20">
                         <i class="fa-solid fa-play-circle"></i>
                     </div>
@@ -549,7 +549,6 @@
 
     <!-- JavaScript Application Engine -->
     <script>
-        // Globalne promenljive definisane samo jednom
         const SUPABASE_URL = 'https://uqsxwszjjqgtinsbnqil.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxc3h3c3pqanFndGluc2JucWlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMzE0MTksImV4cCI6MjEwODcwNzQxOX0.AjmCFcYR0a_MpgNBdjqZZrFEJfVlKtXD8RnRn9e_DZM';
         
@@ -643,11 +642,9 @@
             }, 4000);
         };
 
-        // Inicijalizacija aplikacije i event listener-a
         window.addEventListener('DOMContentLoaded', async () => {
             initTheme();
 
-            // Bezbedna inicijalizacija Supabase klijenta
             try {
                 if (window.supabase && window.supabase.createClient) {
                     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -674,8 +671,10 @@
                 navigateTo('dashboard');
                 loadAllAppData();
             } else {
-                navigateTo('auth');
+                currentUser = null;
+                currentUserProfile = null;
                 renderNav();
+                navigateTo('auth');
             }
         }
 
@@ -690,7 +689,22 @@
             if (data) currentUserProfile = data;
         }
 
+        // AKO KLIKNE NA LOGO
+        window.handleLogoClick = function() {
+            if (currentUser) {
+                navigateTo('dashboard');
+            } else {
+                navigateTo('auth');
+            }
+        };
+
         window.navigateTo = function(screenName) {
+            // Ako korisnik nije ulogovan, a pokušava da otvori bilo šta sem 'auth', vrati ga na auth
+            if (!currentUser && screenName !== 'auth') {
+                navigateTo('auth');
+                return;
+            }
+
             const screenAuth = document.getElementById('screen-auth');
             const screenDashboard = document.getElementById('screen-dashboard');
             const screenProfile = document.getElementById('screen-profile');
@@ -780,9 +794,10 @@
                     if (activeViewMode === 'admin') switchViewMode('user');
                 }
             } else {
+                // VRAĆEN STARINSKI NATPIS ZA POZIVNICU
                 container.innerHTML = `
                     <span class="text-xs text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 font-semibold">
-                        <i class="fa-solid fa-lock text-xs mr-1"></i> Supabase Auth
+                        <i class="fa-solid fa-lock text-xs mr-1"></i> Pozivnica
                     </span>
                 `;
             }
@@ -821,7 +836,6 @@
         };
 
         function setupEventListeners() {
-            // LOGIN SUBMIT
             document.getElementById('form-login').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!supabaseClient) return;
@@ -841,7 +855,6 @@
                 }
             });
 
-            // REGISTER SUBMIT
             document.getElementById('form-register').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!supabaseClient) return;
@@ -901,7 +914,6 @@
                 showToast("Registracija uspešna! Dobrodošli.", "success");
             });
 
-            // WITHDRAW SUBMIT
             document.getElementById('form-withdraw').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!currentUser || !currentUserProfile || !supabaseClient) return;
@@ -949,7 +961,6 @@
                 }
             });
 
-            // CHANGE PASSWORD
             document.getElementById('form-change-password').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!supabaseClient) return;
