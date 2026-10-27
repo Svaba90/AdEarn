@@ -333,17 +333,26 @@
 
             <!-- ADMIN CONTROL PANEL VIEW -->
             <div id="view-admin-content" class="hidden space-y-8">
+                <!-- DODAVANJE RUČNOG KODA POZIVNICE -->
                 <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                            <h3 class="text-xl font-bold text-white flex items-center gap-2">
-                                <i class="fa-solid fa-key text-amber-400"></i> Upravljanje Pozivnicama (Invite Codes)
-                            </h3>
-                            <p class="text-sm text-gray-400 mt-1">Generišite kodove za nove korisnike.</p>
-                        </div>
-                        <button onclick="generateInviteCode()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center gap-2 justify-center">
-                            <i class="fa-solid fa-plus"></i> Generiši Novi Kod
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-key text-amber-400"></i> Kreiraj Kod Pozivnice
+                    </h3>
+                    <p class="text-sm text-gray-400 mb-6">Unesite željeni tekst za novi kod pozivnice.</p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="admin-custom-invite" placeholder="npr. MOJKOD123" class="flex-1 bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2.5 px-4 uppercase tracking-wider font-mono focus:outline-none focus:border-amber-400 transition">
+                        <button onclick="createCustomInviteCode()" class="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center gap-2 justify-center">
+                            <i class="fa-solid fa-plus"></i> Dodaj Kod
                         </button>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-ticket text-amber-400"></i> Postojeći Kodovi Pozivnica
+                        </h3>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" id="invite-codes-list"></div>
                 </div>
@@ -1125,12 +1134,30 @@
             renderUsersTable(users || []);
         }
 
-        window.generateInviteCode = async function() {
+        // RUČNO KREIRANJE KODA POZIVNICE
+        window.createCustomInviteCode = async function() {
             if (!supabaseClient || !currentUser) return;
-            const randomCode = 'VIP-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-            await supabaseClient.from('invites').insert([{ code: randomCode, used: false, created_by: currentUser.email }]);
-            loadAdminData();
-            showToast(`Generisan kod: ${randomCode}`, "success");
+            const inputField = document.getElementById('admin-custom-invite');
+            const customCode = inputField.value.trim().toUpperCase();
+
+            if (!customCode) {
+                showToast("Molimo unesite kod pozivnice!", "error");
+                return;
+            }
+
+            const { error } = await supabaseClient.from('invites').insert([{ 
+                code: customCode, 
+                used: false, 
+                created_by: currentUser.email 
+            }]);
+
+            if (error) {
+                showToast("Greška (možda kod već postoji): " + error.message, "error");
+            } else {
+                inputField.value = '';
+                loadAdminData();
+                showToast(`Uspešno dodat kod: ${customCode}`, "success");
+            }
         };
 
         function renderInviteCodes(invites) {
