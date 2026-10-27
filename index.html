@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="sr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdEarn Serbia - VIP PTC Platforma</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen dark:bg-gray-950 dark:text-gray-100 bg-gray-50 text-gray-900 transition-colors duration-300 flex flex-col">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Navigation Header -->
+    <nav class="border-b border-gray-800 bg-gray-900/90 dark:bg-gray-900/90 dark:border-gray-800 bg-white/90 border-gray-200 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & Brand -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('dashboard')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/20">
+                        <i class="fa-solid fa-play-circle"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold bg-gradient-to-r from-emerald-400 to-brand-500 bg-clip-text text-transparent">AdEarn</span>
+                        <span class="text-xs text-gray-400 block -mt-1 font-semibold">Srbija VIP PTC</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Controls -->
+                <div class="hidden md:flex items-center gap-2">
+                    <button id="nav-btn-dashboard" onclick="navigateTo('dashboard')" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-300 hover:text-white flex items-center gap-2 transition">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Komandna Tabla</span>
+                    </button>
+                    <button id="nav-btn-donations" onclick="navigateTo('donations')" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-300 hover:text-white flex items-center gap-2 transition">
+                        <i class="fa-solid fa-heart text-rose-500"></i>
+                        <span>Podrži Nas</span>
+                    </button>
+                    <button id="nav-btn-profile" onclick="navigateTo('profile')" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-300 hover:text-white flex items-center gap-2 transition">
+                        <i class="fa-solid fa-user-gear"></i>
+                        <span>Moj Profil</span>
+                    </button>
+                </div>
+
+                <!-- Right Header Tools (Theme, Logout, Hamburger) -->
+                <div class="flex items-center gap-2">
+                    <!-- Dark / Light Theme Toggle -->
+                    <button id="theme-toggle" aria-label="Promeni temu" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 transition-all font-medium text-xs sm:text-sm shadow-sm">
+                        <span id="theme-icon-container" class="text-amber-400">
+                            <i class="fa-solid fa-sun"></i>
+                        </span>
+                        <span id="theme-label-text" class="hidden sm:inline">Svetla tema</span>
+                    </button>
+
+                    <!-- Dynamic Logout/Status Bar (Bez profilne ikonice u hederu) -->
+                    <div id="nav-auth-container" class="flex items-center gap-2">
+                        <!-- Loaded via JS -->
+                    </div>
+
+                    <!-- Mobile Hamburger Button -->
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 transition">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Hamburger Menu -->
+        <div id="mobile-dropdown-menu" class="hidden md:hidden border-t border-gray-800 bg-gray-900/95 px-4 py-4 space-y-2 shadow-2xl transition-all">
+            <button onclick="navigateTo('dashboard'); toggleMobileMenu();" class="w-full px-4 py-3 rounded-xl text-sm font-semibold text-gray-200 hover:bg-gray-800 flex items-center gap-3 transition text-left">
+                <i class="fa-solid fa-chart-pie text-brand-500 text-lg w-6"></i>
+                <span>Komandna Tabla</span>
+            </button>
+            <button onclick="navigateTo('donations'); toggleMobileMenu();" class="w-full px-4 py-3 rounded-xl text-sm font-semibold text-gray-200 hover:bg-gray-800 flex items-center gap-3 transition text-left">
+                <i class="fa-solid fa-heart text-rose-500 text-lg w-6"></i>
+                <span>Podrži Nas</span>
+            </button>
+            <button onclick="navigateTo('profile'); toggleMobileMenu();" class="w-full px-4 py-3 rounded-xl text-sm font-semibold text-gray-200 hover:bg-gray-800 flex items-center gap-3 transition text-left">
+                <i class="fa-solid fa-user-gear text-blue-400 text-lg w-6"></i>
+                <span>Moj Profil</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Dynamic Content Region -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+        <!-- 1. AUTHENTICATION SCREEN -->
+        <div id="screen-auth" class="max-w-md mx-auto py-8 sm:py-12">
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <div class="flex border-b border-gray-800 mb-6">
+                    <button id="tab-login-btn" onclick="switchAuthTab('login')" class="flex-1 py-3 font-semibold text-center border-b-2 border-brand-500 text-brand-500 transition">Prijava</button>
+                    <button id="tab-register-btn" onclick="switchAuthTab('register')" class="flex-1 py-3 font-semibold text-center border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition">Registracija</button>
+                </div>
+
+                <form id="form-login" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Email Adresa</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-gray-500"></i>
+                            <input type="email" id="login-email" required class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:border-brand-500 transition" placeholder="vas@email.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Lozinka</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-gray-500"></i>
+                            <input type="password" id="login-password" required class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:border-brand-500 transition" placeholder="••••••••">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition shadow-lg shadow-brand-600/30 flex justify-center items-center gap-2">
+                        <span>Prijavi Se</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <form id="form-register" class="space-y-4 hidden">
+                    <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400 text-xs flex items-start gap-2 mb-2">
+                        <i class="fa-solid fa-shield-halved text-base mt-0.5"></i>
+                        <span>Platforma je privatna. Registracija zahteva važeći <strong>Kod Pozivnice</strong> od administratora.</span>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Ime / Korisničko ime</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-gray-500"></i>
+                            <input type="text" id="reg-name" required class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:border-brand-500 transition" placeholder="Petar Petrović">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Email Adresa</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-gray-500"></i>
+                            <input type="email" id="reg-email" required class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:border-brand-500 transition" placeholder="vas@email.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Lozinka</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-gray-500"></i>
+                            <input type="password" id="reg-password" required minlength="6" class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:border-brand-500 transition" placeholder="Min. 6 karaktera">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-amber-400 mb-1">Kod Pozivnice (Invite Code)</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-amber-500"></i>
+                            <input type="text" id="reg-invite" required class="w-full bg-gray-950 border border-amber-500/50 text-gray-100 rounded-xl py-2.5 pl-10 pr-4 uppercase tracking-widest font-mono focus:outline-none focus:border-amber-400 transition" placeholder="VIP-XXXX">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition shadow-lg shadow-brand-600/30 flex justify-center items-center gap-2">
+                        <span>Registruj Se</span>
+                        <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 2. DASHBOARD SCREEN -->
+        <div id="screen-dashboard" class="hidden space-y-8">
+            <div id="admin-banner" class="hidden bg-gradient-to-r from-purple-900/40 to-indigo-900/40 border border-purple-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 shadow-md">
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-purple-600/20 text-purple-400 rounded-xl">
+                        <i class="fa-solid fa-user-shield text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-purple-300">Admin Režim Aktivan</h4>
+                        <p class="text-xs text-purple-200">Upravljanje pozivnicama, korisnicima i ručno odobravanje isplata.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="switchViewMode('user')" class="px-3.5 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-lg text-xs font-semibold transition border border-gray-700">Korisnički Pogled</button>
+                    <button onclick="switchViewMode('admin')" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-semibold transition shadow-sm">Admin Panel</button>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex items-center gap-5 relative overflow-hidden shadow-sm">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-2xl">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs uppercase font-semibold text-gray-400 tracking-wider">Trenutni Saldo</span>
+                        <div class="text-3xl font-extrabold text-white mt-1" id="user-balance">0.00 €</div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex items-center gap-5 relative overflow-hidden shadow-sm">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 text-2xl">
+                        <i class="fa-solid fa-rectangle-ad"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs uppercase font-semibold text-gray-400 tracking-wider">Odgledane Reklame</span>
+                        <div class="text-3xl font-extrabold text-white mt-1" id="user-ads-count">0</div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex items-center gap-5 relative overflow-hidden shadow-sm">
+                    <div id="user-status-avatar-box" class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl overflow-hidden shrink-0 shadow-inner"></div>
+                    <div>
+                        <span class="text-xs uppercase font-semibold text-gray-400 tracking-wider">Status Člana</span>
+                        <div class="text-lg font-bold text-amber-400 mt-1 flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Verifikovan VIP
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- USER MAIN CONTENT -->
+            <div id="view-user-content" class="space-y-8">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800 pb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-play text-brand-500"></i> Gledaj Reklame i Zaradi Novac
+                            </h3>
+                            <p class="text-sm text-gray-400 mt-1">Svaka odgledana reklama dodaje <strong>0.05 €</strong> na vaš saldo. Trajanje tajmera je 10 sekundi.</p>
+                        </div>
+                        <button id="btn-start-ad" onclick="startAdWatcher()" class="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition shadow-lg shadow-brand-600/20 flex items-center gap-2 justify-center">
+                            <i class="fa-solid fa-circle-play"></i> Pokreni Reklamu (0.05 €)
+                        </button>
+                    </div>
+
+                    <div id="ad-player-box" class="mt-6 hidden bg-gray-950 border border-gray-800 rounded-2xl p-6 relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2 text-sm font-semibold text-gray-300">
+                                <i class="fa-solid fa-clock text-brand-500 animate-spin"></i>
+                                Preostalo vreme: <span id="ad-timer" class="text-brand-400 font-bold text-base">10</span>s
+                            </div>
+                            <span class="text-xs bg-brand-500/20 text-brand-400 px-3 py-1 rounded-full font-mono font-semibold">Sponzorisani Oglas</span>
+                        </div>
+
+                        <div class="w-full bg-gray-800 rounded-full h-2 mb-6 overflow-hidden">
+                            <div id="ad-progress-bar" class="bg-brand-500 h-2 rounded-full w-0 transition-all duration-1000"></div>
+                        </div>
+
+                        <div id="ad-content-area" class="min-h-[200px] rounded-xl bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-800 p-8 flex flex-col items-center justify-center text-center"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2 mb-4">
+                            <i class="fa-brands fa-paypal text-blue-500"></i> Podnesi Zahtev za Isplatu
+                        </h3>
+                        <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl mb-6 text-xs text-blue-300 space-y-1">
+                            <div class="font-bold text-sm flex items-center gap-1.5 mb-1 text-blue-400">
+                                <i class="fa-solid fa-info-circle"></i> Verifikacija i odobrenje
+                            </div>
+                            <p>• Isplate se šalju na vaš verifikovani PayPal nalog.</p>
+                            <p>• Zahtev pregleda i ručno odobrava administrator radi sigurnosti.</p>
+                            <p>• Minimalna suma za isplatu iznosi <strong>1.00 €</strong>.</p>
+                        </div>
+                        <form id="form-withdraw" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-1">PayPal Email Adresa</label>
+                                <div class="relative">
+                                    <i class="fa-solid fa-at absolute left-3.5 top-3.5 text-gray-500"></i>
+                                    <input type="email" id="withdraw-paypal" required class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:border-brand-500 transition" placeholder="vas-paypal@gmail.com">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-1">Iznos za Isplatu (€)</label>
+                                <div class="relative">
+                                    <i class="fa-solid fa-euro-sign absolute left-3.5 top-3.5 text-gray-500"></i>
+                                    <input type="number" step="0.01" min="1.00" id="withdraw-amount" required class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:border-brand-500 transition" placeholder="npr. 2.50">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i> Pošalji Zahtev
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm flex flex-col">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-clock-rotate-left text-brand-500"></i> Nedavni Zahtevi
+                            </h3>
+                            <button onclick="navigateTo('profile')" class="text-xs text-brand-500 hover:underline font-semibold flex items-center gap-1">
+                                Vidi sve u profilu <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <div class="flex-1 overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="border-b border-gray-800 text-gray-400 font-semibold">
+                                    <tr>
+                                        <th class="pb-3">Datum</th>
+                                        <th class="pb-3">Iznos</th>
+                                        <th class="pb-3">PayPal</th>
+                                        <th class="pb-3 text-right">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-withdrawals-table" class="divide-y divide-gray-800/50"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN CONTROL PANEL VIEW -->
+            <div id="view-admin-content" class="hidden space-y-8">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-key text-amber-400"></i> Upravljanje Pozivnicama (Invite Codes)
+                            </h3>
+                            <p class="text-sm text-gray-400 mt-1">Generišite kodove za nove korisnike koji žele da se registruju na platformu.</p>
+                        </div>
+                        <button onclick="generateInviteCode()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center gap-2 justify-center">
+                            <i class="fa-solid fa-plus"></i> Generiši Novi Kod
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4" id="invite-codes-list"></div>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-list-check text-purple-400"></i> Zahtevi za Isplatu Korisnika
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="border-b border-gray-800 text-gray-400 font-semibold">
+                                <tr>
+                                    <th class="pb-3">Korisnik</th>
+                                    <th class="pb-3">PayPal Email</th>
+                                    <th class="pb-3">Iznos (€)</th>
+                                    <th class="pb-3">Datum</th>
+                                    <th class="pb-3">Status</th>
+                                    <th class="pb-3 text-right">Odobrenje</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-withdrawals-table" class="divide-y divide-gray-800/50"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-users text-blue-400"></i> Pregled Registrovanih Korisnika
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="border-b border-gray-800 text-gray-400 font-semibold">
+                                <tr>
+                                    <th class="pb-3">Slika</th>
+                                    <th class="pb-3">Korisnik</th>
+                                    <th class="pb-3">Email</th>
+                                    <th class="pb-3">Saldo (€)</th>
+                                    <th class="pb-3">Odgledane Reklame</th>
+                                    <th class="pb-3 text-right">Uloga</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-table" class="divide-y divide-gray-800/50"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. PROFILE SCREEN (MOJ PROFIL) -->
+        <div id="screen-profile" class="hidden space-y-8">
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    <div class="relative w-28 h-28 rounded-2xl overflow-hidden border-2 border-brand-500 shadow-lg bg-gray-950 flex items-center justify-center text-3xl font-bold text-brand-400 shrink-0" id="profile-avatar-display"></div>
+                    <div class="text-center md:text-left flex-1">
+                        <h2 class="text-2xl font-black text-white" id="profile-display-name">Korisnik</h2>
+                        <p class="text-sm text-gray-400 mt-0.5" id="profile-display-email">email@domain.com</p>
+                        <div class="mt-3 flex flex-wrap justify-center md:justify-start gap-2">
+                            <span class="px-3 py-1 bg-brand-500/10 border border-brand-500/20 text-brand-400 rounded-xl text-xs font-bold" id="profile-display-role">VIP Član</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-camera text-brand-500"></i> Izaberi ili Učitaj Sliku Profila
+                    </h3>
+                    <p class="text-xs text-gray-400 mb-4">Izaberite neku od ponuđenih slika ili otpremite svoju sa uređaja (do 2MB).</p>
+                    <div class="flex flex-wrap gap-3 mb-6" id="avatar-presets-box"></div>
+                    <label class="block w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-xl text-xs font-semibold text-center cursor-pointer transition border border-gray-700">
+                        <i class="fa-solid fa-upload mr-2"></i> Otpremi sliku sa uređaja
+                        <input type="file" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
+                    </label>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-lock text-brand-500"></i> Promena Lozinke
+                    </h3>
+                    <form id="form-change-password" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Trenutna Lozinka</label>
+                            <input type="password" id="pass-current" required class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Nova Lozinka</label>
+                            <input type="password" id="pass-new" required minlength="6" class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Potvrdite Novu Lozinku</label>
+                            <input type="password" id="pass-confirm" required minlength="6" class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-brand-500">
+                        </div>
+                        <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold rounded-xl transition shadow-md shadow-brand-600/20">
+                            Sačuvaj Novu Lozinku
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-history text-brand-500"></i> Istorija Vaših Isplata
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="border-b border-gray-800 text-gray-400 font-semibold">
+                            <tr>
+                                <th class="pb-3">Datum</th>
+                                <th class="pb-3">Iznos</th>
+                                <th class="pb-3">PayPal Email</th>
+                                <th class="pb-3 text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="profile-withdrawals-table" class="divide-y divide-gray-800/50"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. DONATIONS SCREEN (PODRŽI PLATFORMU) -->
+        <div id="screen-donations" class="hidden space-y-8">
+            <div class="bg-gradient-to-r from-rose-950/40 via-purple-950/30 to-indigo-950/40 border border-rose-500/20 rounded-2xl p-6 sm:p-8 shadow-md">
+                <div class="max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-full text-xs font-bold mb-4">
+                        <i class="fa-solid fa-heart"></i> Podrška Razvoju
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-white">Podržite Dalji Rad AdEarn Platforme</h2>
+                    <p class="text-gray-300 mt-2 text-sm sm:text-base leading-relaxed">
+                        Vaše donacije pomažu pokrivanju troškova servera, održavanju sigurnosti sistema i ubrzavanju isplata za sve članove naše zajednice. Hvala vam što pomažete da rastemo zajedno!
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 text-2xl">
+                                <i class="fa-brands fa-paypal"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">PayPal Donacija</h3>
+                                <p class="text-xs text-gray-400">Direktna uplata za održavanje</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 my-6">
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Izaberite iznos donacije:</label>
+                            <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                                <button type="button" onclick="selectDonationAmount(5)" class="donation-amt-btn py-2.5 rounded-xl border border-gray-800 bg-gray-950 font-bold text-sm hover:border-brand-500 transition text-center" data-amt="5">5 €</button>
+                                <button type="button" onclick="selectDonationAmount(10)" class="donation-amt-btn py-2.5 rounded-xl border border-gray-800 bg-gray-950 font-bold text-sm hover:border-brand-500 transition text-center" data-amt="10">10 €</button>
+                                <button type="button" onclick="selectDonationAmount(20)" class="donation-amt-btn py-2.5 rounded-xl border border-gray-800 bg-gray-950 font-bold text-sm hover:border-brand-500 transition text-center" data-amt="20">20 €</button>
+                                <button type="button" onclick="selectDonationAmount('custom')" class="donation-amt-btn py-2.5 rounded-xl border border-gray-800 bg-gray-950 font-bold text-sm hover:border-brand-500 transition text-center" data-amt="custom">Drugi</button>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-gray-950 rounded-xl border border-gray-800 text-xs text-gray-400 font-mono flex items-center justify-between">
+                            <span>Primalac: ristics134@gmail.com</span>
+                            <button onclick="navigator.clipboard.writeText('ristics134@gmail.com'); showToast('PayPal adresa kopirana!', 'info')" class="text-brand-500 hover:underline font-sans font-bold">Kopiraj</button>
+                        </div>
+                    </div>
+
+                    <button onclick="triggerPayPalDonationModal()" class="w-full mt-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-paypal text-lg"></i> Doniraj putem PayPal-a
+                    </button>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-2xl">
+                                <i class="fa-solid fa-coins"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Kripto Donacije</h3>
+                                <p class="text-xs text-gray-400">Slanje novca preko blokčejn mreža</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 my-4">
+                            <div class="p-3 bg-gray-950 rounded-xl border border-gray-800">
+                                <div class="flex items-center justify-between text-xs font-bold mb-1">
+                                    <span class="text-amber-400 flex items-center gap-1.5"><i class="fa-brands fa-bitcoin"></i> Bitcoin (BTC)</span>
+                                    <button onclick="navigator.clipboard.writeText('1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'); showToast('BTC Adresa kopirana!', 'info')" class="text-gray-400 hover:text-white">Kopiraj</button>
+                                </div>
+                                <p class="text-[11px] font-mono text-gray-500 truncate">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</p>
+                            </div>
+
+                            <div class="p-3 bg-gray-950 rounded-xl border border-gray-800">
+                                <div class="flex items-center justify-between text-xs font-bold mb-1">
+                                    <span class="text-emerald-400 flex items-center gap-1.5"><i class="fa-solid fa-dollar-sign"></i> Tether USDT (TRC-20)</span>
+                                    <button onclick="navigator.clipboard.writeText('TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'); showToast('USDT Adresa kopirana!', 'info')" class="text-gray-400 hover:text-white">Kopiraj</button>
+                                </div>
+                                <p class="text-[11px] font-mono text-gray-500 truncate">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</p>
+                            </div>
+
+                            <div class="p-3 bg-gray-950 rounded-xl border border-gray-800">
+                                <div class="flex items-center justify-between text-xs font-bold mb-1">
+                                    <span class="text-purple-400 flex items-center gap-1.5"><i class="fa-brands fa-ethereum"></i> Ethereum (ETH / ERC-20)</span>
+                                    <button onclick="navigator.clipboard.writeText('0x71C7656EC7ab88b098defB751B7401B5f6d8976F'); showToast('ETH Adresa kopirana!', 'info')" class="text-gray-400 hover:text-white">Kopiraj</button>
+                                </div>
+                                <p class="text-[11px] font-mono text-gray-500 truncate">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="showToast('Hvala na podršci! Kopirajte željenu kripto adresu iznad.', 'success')" class="w-full mt-2 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90 text-gray-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-shield-heart"></i> Potvrdi Kripto Podršku
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript Application Engine -->
+    <script>
+        const PRESET_ADMIN = {
+            username: 'Svaba90',
+            email: 'ristics134@gmail.com',
+            password: '131211'
+        };
+
+        let selectedDonationValue = 10;
+
+        window.toggleMobileMenu = function() {
+            const menu = document.getElementById('mobile-dropdown-menu');
+            menu.classList.toggle('hidden');
+        };
+
+        window.selectDonationAmount = function(amt) {
+            selectedDonationValue = amt;
+            document.querySelectorAll('.donation-amt-btn').forEach(btn => {
+                btn.classList.remove('border-brand-500', 'bg-brand-500/10', 'text-brand-400');
+            });
+            const selectedBtn = document.querySelector(`.donation-amt-btn[data-amt="${amt}"]`);
+            if (selectedBtn) {
+                selectedBtn.classList.add('border-brand-500', 'bg-brand-500/10', 'text-brand-400');
+            }
+        };
+
+        window.triggerPayPalDonationModal = function() {
+            const amtStr = selectedDonationValue === 'custom' ? 'proizvoljan iznos' : `${selectedDonationValue} €`;
+            showToast(`Hvala vam! Otvara se PayPal adresa za donaciju od ${amtStr}.`, "success");
+            window.open('https://paypal.me', '_blank');
+        };
+
+        const AVATAR_PRESETS = [
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+            "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150",
+            "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150",
+            "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150"
+        ];
+
+        let currentUser = null;
+        let currentUserDoc = null;
+        let activeViewMode = 'user';
+        let currentAdTimer = null;
+
+        let localState = JSON.parse(localStorage.getItem('adearn_local_db')) || {
+            users: [
+                {
+                    uid: "admin-svaba90-id",
+                    name: PRESET_ADMIN.username,
+                    email: PRESET_ADMIN.email,
+                    password: PRESET_ADMIN.password,
+                    balance: 100.00,
+                    adsWatched: 0,
+                    avatarUrl: AVATAR_PRESETS[0],
+                    role: "admin",
+                    createdAt: new Date().toISOString()
+                }
+            ],
+            invites: [
+                { id: "inv-1", code: "VIP-SVABA", used: false, createdBy: PRESET_ADMIN.email, createdAt: new Date().toISOString() },
+                { id: "inv-2", code: "VIP-2026", used: false, createdBy: PRESET_ADMIN.email, createdAt: new Date().toISOString() },
+                { id: "inv-3", code: "VIP-PROMO", used: false, createdBy: PRESET_ADMIN.email, createdAt: new Date().toISOString() }
+            ],
+            withdrawals: []
+        };
+
+        function saveLocalState() {
+            localStorage.setItem('adearn_local_db', JSON.stringify(localState));
+        }
+
+        const mockAds = [
+            { title: "Kripto Menjačnica Srbija", desc: "Kupite i prodajte Bitcoin uz najniže provizije u regionu!", icon: "fa-coins", bg: "from-amber-600/20 to-orange-600/20", btnText: "Poseti Menjačnicu" },
+            { title: "TechStore Online Prodavnica", desc: "Najnoviji telefoni i laptopovi sa popustom do 40% ove nedelje.", icon: "fa-laptop", bg: "from-blue-600/20 to-cyan-600/20", btnText: "Pogledaj Ponudu" },
+            { title: "FitLife Teretane & Proteini", desc: "Započnite transformaciju već danas uz besplatan prvi trening.", icon: "fa-dumbbell", bg: "from-red-600/20 to-rose-600/20", btnText: "Preuzmi Karticu" },
+            { title: "Web Hosting Srbija Pro", desc: "Brz i pouzdan cloud hosting sa besplatnim SSL sertifikatom.", icon: "fa-server", bg: "from-purple-600/20 to-indigo-600/20", btnText: "Saznaj Više" }
+        ];
+
+        function applyTheme(theme) {
+            const html = document.documentElement;
+            const iconContainer = document.getElementById('theme-icon-container');
+            const labelText = document.getElementById('theme-label-text');
+
+            if (theme === 'dark') {
+                html.classList.add('dark');
+                if (iconContainer) iconContainer.innerHTML = '<i class="fa-solid fa-sun text-amber-400"></i>';
+                if (labelText) labelText.innerText = 'Svetla tema';
+            } else {
+                html.classList.remove('dark');
+                if (iconContainer) iconContainer.innerHTML = '<i class="fa-solid fa-moon text-indigo-600"></i>';
+                if (labelText) labelText.innerText = 'Tamna tema';
+            }
+            localStorage.setItem('adearn_theme', theme);
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('adearn_theme') || 'dark';
+            applyTheme(savedTheme);
+
+            document.getElementById('theme-toggle').addEventListener('click', () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                applyTheme(isDark ? 'light' : 'dark');
+            });
+        }
+
+        window.showToast = function(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-emerald-900 border-emerald-500 text-emerald-100' :
+                            type === 'error' ? 'bg-red-900 border-red-500 text-red-100' :
+                            'bg-gray-800 border-gray-700 text-gray-100';
+                            
+            const icon = type === 'success' ? 'fa-circle-check text-emerald-400' :
+                         type === 'error' ? 'fa-circle-xmark text-red-400' : 'fa-info-circle text-blue-400';
+
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-xl border shadow-xl ${bgClass} transition-all duration-300 transform translate-x-full text-sm font-medium pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-x-full'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        };
+
+        function initAuth() {
+            const savedSession = JSON.parse(localStorage.getItem('adearn_session'));
+            if (savedSession) {
+                currentUserDoc = savedSession;
+                currentUser = { uid: savedSession.uid, email: savedSession.email };
+                renderNav();
+                navigateTo('dashboard');
+                renderAllData();
+                return;
+            }
+
+            navigateTo('auth');
+            renderNav();
+        }
+
+        function renderAllData() {
+            if (!currentUserDoc) return;
+            updateUserUI();
+            renderWithdrawalsTables();
+            renderInviteCodes(localState.invites);
+            renderUsersTable(localState.users);
+            renderProfileData();
+        }
+
+        window.navigateTo = function(screenName) {
+            const screenAuth = document.getElementById('screen-auth');
+            const screenDashboard = document.getElementById('screen-dashboard');
+            const screenProfile = document.getElementById('screen-profile');
+            const screenDonations = document.getElementById('screen-donations');
+
+            const btnDashboard = document.getElementById('nav-btn-dashboard');
+            const btnProfile = document.getElementById('nav-btn-profile');
+            const btnDonations = document.getElementById('nav-btn-donations');
+
+            if (screenName === 'auth') {
+                screenAuth.classList.remove('hidden');
+                screenDashboard.classList.add('hidden');
+                screenProfile.classList.add('hidden');
+                screenDonations.classList.add('hidden');
+                if (btnDashboard) btnDashboard.classList.add('hidden');
+                if (btnProfile) btnProfile.classList.add('hidden');
+                if (btnDonations) btnDonations.classList.add('hidden');
+                return;
+            }
+
+            if (btnDashboard) btnDashboard.classList.remove('hidden');
+            if (btnProfile) btnProfile.classList.remove('hidden');
+            if (btnDonations) btnDonations.classList.remove('hidden');
+
+            screenAuth.classList.add('hidden');
+
+            const resetClass = "px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-300 hover:text-white flex items-center gap-2 transition";
+            const activeClass = "px-3.5 py-2 rounded-xl text-sm font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20 flex items-center gap-2 transition";
+
+            btnDashboard.className = resetClass;
+            btnProfile.className = resetClass;
+            btnDonations.className = resetClass;
+
+            if (screenName === 'profile') {
+                screenDashboard.classList.add('hidden');
+                screenDonations.classList.add('hidden');
+                screenProfile.classList.remove('hidden');
+                btnProfile.className = activeClass;
+                renderProfileData();
+            } else if (screenName === 'donations') {
+                screenDashboard.classList.add('hidden');
+                screenProfile.classList.add('hidden');
+                screenDonations.classList.remove('hidden');
+                btnDonations.className = activeClass;
+            } else { // 'dashboard'
+                screenProfile.classList.add('hidden');
+                screenDonations.classList.add('hidden');
+                screenDashboard.classList.remove('hidden');
+                btnDashboard.className = activeClass;
+            }
+        };
+
+        function renderNav() {
+            const container = document.getElementById('nav-auth-container');
+            if (currentUserDoc) {
+                // Uklonjena profilna slika iz hedera, ostavljeno dugme za odjavu i status
+                container.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <button onclick="handleLogout()" title="Odjavi se" class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl text-xs font-semibold transition border border-gray-700 flex items-center gap-1.5">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="hidden sm:inline">Odjava</span>
+                        </button>
+                    </div>
+                `;
+
+                if (currentUserDoc.role === 'admin') {
+                    document.getElementById('admin-banner').classList.remove('hidden');
+                } else {
+                    document.getElementById('admin-banner').classList.add('hidden');
+                }
+            } else {
+                container.innerHTML = `
+                    <span class="text-xs text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 font-semibold">
+                        <i class="fa-solid fa-lock text-xs mr-1"></i> Pozivnica
+                    </span>
+                `;
+            }
+        }
+
+        function updateUserUI() {
+            if (!currentUserDoc) return;
+            document.getElementById('user-balance').innerText = `${(currentUserDoc.balance || 0).toFixed(2)} €`;
+            document.getElementById('user-ads-count').innerText = currentUserDoc.adsWatched || 0;
+
+            const statusAvatarBox = document.getElementById('user-status-avatar-box');
+            if (statusAvatarBox) {
+                if (currentUserDoc.avatarUrl) {
+                    statusAvatarBox.innerHTML = `<img src="${currentUserDoc.avatarUrl}" class="w-full h-full object-cover rounded-2xl">`;
+                } else {
+                    statusAvatarBox.innerHTML = `<span class="font-bold text-lg">${(currentUserDoc.name || 'VIP').charAt(0)}</span>`;
+                }
+            }
+        }
+
+        window.switchViewMode = function(mode) {
+            activeViewMode = mode;
+            if (mode === 'admin') {
+                document.getElementById('view-user-content').classList.add('hidden');
+                document.getElementById('view-admin-content').classList.remove('hidden');
+                showToast("Otvoren Admin Panel", "info");
+            } else {
+                document.getElementById('view-user-content').classList.remove('hidden');
+                document.getElementById('view-admin-content').classList.add('hidden');
+            }
+        };
+
+        window.switchAuthTab = function(tab) {
+            const loginBtn = document.getElementById('tab-login-btn');
+            const regBtn = document.getElementById('tab-register-btn');
+            const loginForm = document.getElementById('form-login');
+            const regForm = document.getElementById('form-register');
+
+            if (tab === 'login') {
+                loginBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-brand-500 text-brand-500 transition";
+                regBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition";
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+            } else {
+                regBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-brand-500 text-brand-500 transition";
+                loginBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition";
+                regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            }
+        };
+
+        document.getElementById('form-login').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
+
+            if (email === PRESET_ADMIN.email.toLowerCase() && password === PRESET_ADMIN.password) {
+                let adminUser = localState.users.find(u => u.email.toLowerCase() === PRESET_ADMIN.email.toLowerCase());
+                if (!adminUser) {
+                    adminUser = {
+                        uid: "admin-svaba90-id",
+                        name: PRESET_ADMIN.username,
+                        email: PRESET_ADMIN.email,
+                        password: PRESET_ADMIN.password,
+                        balance: 100.00,
+                        adsWatched: 0,
+                        avatarUrl: AVATAR_PRESETS[0],
+                        role: "admin",
+                        createdAt: new Date().toISOString()
+                    };
+                    localState.users.push(adminUser);
+                    saveLocalState();
+                }
+                currentUserDoc = adminUser;
+                currentUser = { uid: adminUser.uid, email: adminUser.email };
+                localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
+                renderNav();
+                navigateTo('dashboard');
+                renderAllData();
+                showToast(`Dobrodošli nazad Developer/Admin ${PRESET_ADMIN.username}!`, "success");
+                return;
+            }
+
+            const userMatch = localState.users.find(u => u.email.toLowerCase() === email && u.password === password);
+            if (userMatch) {
+                currentUserDoc = userMatch;
+                currentUser = { uid: userMatch.uid, email: userMatch.email };
+                localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
+                renderNav();
+                navigateTo('dashboard');
+                renderAllData();
+                showToast(`Uspešna prijava! Dobrodošli ${userMatch.name}.`, "success");
+            } else {
+                showToast("Greška pri prijavi: Proverite unete podatke.", "error");
+            }
+        });
+
+        document.getElementById('form-register').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const password = document.getElementById('reg-password').value;
+            const inviteCode = document.getElementById('reg-invite').value.trim().toUpperCase();
+
+            if (localState.users.some(u => u.email.toLowerCase() === email)) {
+                showToast("Korisnik sa ovim emailom već postoji!", "error");
+                return;
+            }
+
+            const validInvite = localState.invites.find(i => i.code === inviteCode && !i.used);
+            if (!validInvite) {
+                showToast("Nevalidan ili iskorišćen Kod Pozivnice!", "error");
+                return;
+            }
+
+            validInvite.used = true;
+            validInvite.usedBy = email;
+            validInvite.usedAt = new Date().toISOString();
+
+            const newUser = {
+                uid: 'usr-' + Math.random().toString(36).substring(2, 9),
+                name: name,
+                email: email,
+                password: password,
+                balance: 0.00,
+                adsWatched: 0,
+                avatarUrl: AVATAR_PRESETS[Math.floor(Math.random() * AVATAR_PRESETS.length)],
+                role: 'user',
+                createdAt: new Date().toISOString()
+            };
+
+            localState.users.push(newUser);
+            saveLocalState();
+
+            currentUserDoc = newUser;
+            currentUser = { uid: newUser.uid, email: newUser.email };
+            localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
+
+            renderNav();
+            navigateTo('dashboard');
+            renderAllData();
+            showToast("Registracija uspešna! Dobrodošli na AdEarn Srbija.", "success");
+        });
+
+        window.handleLogout = function() {
+            localStorage.removeItem('adearn_session');
+            currentUser = null;
+            currentUserDoc = null;
+            renderNav();
+            navigateTo('auth');
+            showToast("Uspešno ste se odjavili.", "info");
+        };
+
+        window.startAdWatcher = function() {
+            if (currentAdTimer) return;
+
+            const playerBox = document.getElementById('ad-player-box');
+            const timerEl = document.getElementById('ad-timer');
+            const progressBar = document.getElementById('ad-progress-bar');
+            const contentArea = document.getElementById('ad-content-area');
+            const startBtn = document.getElementById('btn-start-ad');
+
+            const ad = mockAds[Math.floor(Math.random() * mockAds.length)];
+
+            contentArea.innerHTML = `
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr ${ad.bg} flex items-center justify-center text-brand-400 text-3xl mb-4 border border-brand-500/20 animate-bounce">
+                    <i class="fa-solid ${ad.icon}"></i>
+                </div>
+                <h4 class="text-xl font-bold text-white">${ad.title}</h4>
+                <p class="text-sm text-gray-400 max-w-md mt-2 mb-4">${ad.desc}</p>
+                <button class="px-5 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-xl text-xs font-semibold transition" onclick="showToast('Sponzorisana stranica je otvorena.', 'info')">
+                    ${ad.btnText} <i class="fa-solid fa-external-link text-[10px] ml-1"></i>
+                </button>
+            `;
+
+            playerBox.classList.remove('hidden');
+            startBtn.disabled = true;
+            startBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            let timeLeft = 10;
+            timerEl.innerText = timeLeft;
+            progressBar.style.width = '0%';
+
+            currentAdTimer = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = timeLeft;
+                progressBar.style.width = `${((10 - timeLeft) / 10) * 100}%`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(currentAdTimer);
+                    currentAdTimer = null;
+
+                    rewardUserForAd();
+
+                    playerBox.classList.add('hidden');
+                    startBtn.disabled = false;
+                    startBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }, 1000);
+        };
+
+        function rewardUserForAd() {
+            if (!currentUserDoc) return;
+            const rewardAmount = 0.05;
+
+            currentUserDoc.balance = parseFloat(((currentUserDoc.balance || 0) + rewardAmount).toFixed(2));
+            currentUserDoc.adsWatched = (currentUserDoc.adsWatched || 0) + 1;
+
+            const userIndex = localState.users.findIndex(u => u.uid === currentUserDoc.uid);
+            if (userIndex !== -1) {
+                localState.users[userIndex].balance = currentUserDoc.balance;
+                localState.users[userIndex].adsWatched = currentUserDoc.adsWatched;
+            }
+            saveLocalState();
+            localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
+
+            renderAllData();
+            showToast(`Uspešno! Dodato +${rewardAmount.toFixed(2)} € na vaš saldo!`, "success");
+        }
+
+        document.getElementById('form-withdraw').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!currentUserDoc) return;
+
+            const paypalEmail = document.getElementById('withdraw-paypal').value.trim();
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
+
+            if (amount < 1.00) {
+                showToast("Minimalna suma za isplatu je 1.00 €.", "error");
+                return;
+            }
+
+            if (amount > (currentUserDoc.balance || 0)) {
+                showToast("Nemate dovoljno novca na saldu za ovu isplatu.", "error");
+                return;
+            }
+
+            currentUserDoc.balance = parseFloat((currentUserDoc.balance - amount).toFixed(2));
+            const userIndex = localState.users.findIndex(u => u.uid === currentUserDoc.uid);
+            if (userIndex !== -1) {
+                localState.users[userIndex].balance = currentUserDoc.balance;
+            }
+
+            const newWithdrawal = {
+                id: 'req-' + Math.random().toString(36).substring(2, 9),
+                userId: currentUserDoc.uid,
+                userName: currentUserDoc.name || currentUserDoc.email,
+                userEmail: currentUserDoc.email,
+                paypalEmail: paypalEmail,
+                amount: amount,
+                status: 'pending',
+                requestedAt: new Date().toISOString()
+            };
+
+            localState.withdrawals.push(newWithdrawal);
+            saveLocalState();
+            localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
+
+            document.getElementById('withdraw-amount').value = '';
+            renderAllData();
+            showToast("Zahtev za isplatu podnet! Administrator će verifikovati podatke.", "success");
+        });
+
+        function renderWithdrawalsTables() {
+            const dashTable = document.getElementById('dashboard-withdrawals-table');
+            const profileTable = document.getElementById('profile-withdrawals-table');
+            const adminTable = document.getElementById('admin-withdrawals-table');
+
+            const myRequests = localState.withdrawals.filter(r => r.userId === currentUserDoc?.uid);
+
+            const renderRows = (reqList, isDashboard = false) => {
+                if (reqList.length === 0) {
+                    return `<tr><td colspan="4" class="py-4 text-center text-gray-500">Nema evidentiranih zahteva za isplatu.</td></tr>`;
+                }
+                const itemsToRender = isDashboard ? reqList.slice(-4).reverse() : [...reqList].reverse();
+
+                return itemsToRender.map(r => {
+                    const statusBadge = r.status === 'approved' 
+                        ? `<span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-semibold"><i class="fa-solid fa-check mr-1"></i> Odobreno</span>`
+                        : r.status === 'rejected'
+                        ? `<span class="px-2.5 py-1 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-semibold"><i class="fa-solid fa-xmark mr-1"></i> Odbijeno</span>`
+                        : `<span class="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-lg text-xs font-semibold"><i class="fa-solid fa-clock mr-1"></i> Na Čekanju</span>`;
+
+                    const dateObj = new Date(r.requestedAt);
+                    const dateStr = dateObj.toLocaleDateString('sr-RS') + ' ' + dateObj.toLocaleTimeString('sr-RS', { hour: '2-digit', minute: '2-digit' });
+
+                    return `
+                        <tr>
+                            <td class="py-3 text-gray-300 font-medium text-xs">${dateStr}</td>
+                            <td class="py-3 font-bold text-white">${r.amount.toFixed(2)} €</td>
+                            <td class="py-3 text-gray-400 font-mono text-xs">${r.paypalEmail}</td>
+                            <td class="py-3 text-right">${statusBadge}</td>
+                        </tr>
+                    `;
+                }).join('');
+            };
+
+            if (dashTable) dashTable.innerHTML = renderRows(myRequests, true);
+            if (profileTable) profileTable.innerHTML = renderRows(myRequests, false);
+
+            if (adminTable) {
+                if (localState.withdrawals.length === 0) {
+                    adminTable.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-gray-500">Nema zahteva na čekanju.</td></tr>`;
+                } else {
+                    adminTable.innerHTML = [...localState.withdrawals].reverse().map(r => {
+                        const dateStr = new Date(r.requestedAt).toLocaleDateString('sr-RS');
+                        const statusBadge = r.status === 'approved' 
+                            ? `<span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-semibold">Odobreno</span>`
+                            : r.status === 'rejected'
+                            ? `<span class="px-2.5 py-1 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-semibold">Odbijeno</span>`
+                            : `<span class="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-lg text-xs font-semibold">Na Čekanju</span>`;
+
+                        const actions = r.status === 'pending' ? `
+                            <div class="flex justify-end gap-2">
+                                <button onclick="processWithdrawal('${r.id}', 'approved', '${r.userId}', ${r.amount})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition">Odobri</button>
+                                <button onclick="processWithdrawal('${r.id}', 'rejected', '${r.userId}', ${r.amount})" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-semibold transition">Odbij</button>
+                            </div>
+                        ` : `<span class="text-xs text-gray-400">Rešeno</span>`;
+
+                        return `
+                            <tr>
+                                <td class="py-3 font-semibold text-gray-200">${r.userName || r.userEmail}</td>
+                                <td class="py-3 text-gray-400 font-mono text-xs">${r.paypalEmail}</td>
+                                <td class="py-3 font-bold text-emerald-400">${r.amount.toFixed(2)} €</td>
+                                <td class="py-3 text-gray-400 text-xs">${dateStr}</td>
+                                <td class="py-3">${statusBadge}</td>
+                                <td class="py-3 text-right">${actions}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            }
+        }
+
+        window.processWithdrawal = function(reqId, status, reqUserId, amount) {
+            const req = localState.withdrawals.find(w => w.id === reqId);
+            if (!req) return;
+
+            req.status = status;
+            req.processedAt = new Date().toISOString();
+
+            if (status === 'rejected') {
+                const targetUser = localState.users.find(u => u.uid === reqUserId);
+                if (targetUser) {
+                    targetUser.balance = parseFloat(((targetUser.balance || 0) + amount).toFixed(2));
+                    if (currentUserDoc && currentUserDoc.uid === reqUserId) {
+                        currentUserDoc.balance = targetUser.balance;
+                        localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
+                    }
+                }
+            }
+
+            saveLocalState();
+            renderAllData();
+            showToast(`Zahtev je uspešno markiran kao: ${status === 'approved' ? 'Odobren' : 'Odbijen'}.`, "success");
+        };
+
+        function renderProfileData() {
+            if (!currentUserDoc) return;
+
+            document.getElementById('profile-display-name').innerText = currentUserDoc.name || 'Korisnik';
+            document.getElementById('profile-display-email').innerText = currentUserDoc.email;
+            document.getElementById('profile-display-role').innerText = currentUserDoc.role === 'admin' ? 'Developer / Admin' : 'VIP Član';
+
+            const avatarBox = document.getElementById('profile-avatar-display');
+            if (currentUserDoc.avatarUrl) {
+                avatarBox.innerHTML = `<img src="${currentUserDoc.avatarUrl}" class="w-full h-full object-cover">`;
+            } else {
+                avatarBox.innerHTML = `<span>${(currentUserDoc.name || 'U').charAt(0)}</span>`;
+            }
+
+            const presetsBox = document.getElementById('avatar-presets-box');
+            if (presetsBox) {
+                presetsBox.innerHTML = AVATAR_PRESETS.map((url, index) => `
+                    <button onclick="setPresetAvatar('${url}')" class="w-9 h-9 rounded-xl overflow-hidden border-2 ${currentUserDoc.avatarUrl === url ? 'border-brand-500 ring-2 ring-brand-500/30' : 'border-gray-700 hover:border-gray-500'} transition">
+                        <img src="${url}" class="w-full h-full object-cover">
+                    </button>
+                `).join('');
+            }
+        }
+
+        window.handleAvatarUpload = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                showToast("Slika je prevelika! Maksimalna veličina je 2MB.", "error");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Url = e.target.result;
+                updateUserAvatar(base64Url);
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.setPresetAvatar = function(url) {
+            updateUserAvatar(url);
+        };
+
+        function updateUserAvatar(avatarUrl) {
+            if (!currentUserDoc) return;
+            currentUserDoc.avatarUrl = avatarUrl;
+
+            const userIndex = localState.users.findIndex(u => u.uid === currentUserDoc.uid);
+            if (userIndex !== -1) {
+                localState.users[userIndex].avatarUrl = avatarUrl;
+            }
+
+            saveLocalState();
+            localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
+
+            renderNav();
+            renderProfileData();
+            renderUsersTable(localState.users);
+            showToast("Slika profila je uspešno ažurirana!", "success");
+        }
+
+        document.getElementById('form-change-password').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!currentUserDoc) return;
+
+            const currPass = document.getElementById('pass-current').value;
+            const newPass = document.getElementById('pass-new').value;
+            const confirmPass = document.getElementById('pass-confirm').value;
+
+            if (currPass !== currentUserDoc.password) {
+                showToast("Pogrešna trenutna lozinka!", "error");
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                showToast("Nova lozinka i potvrda se ne poklapaju!", "error");
+                return;
+            }
+
+            currentUserDoc.password = newPass;
+
+            const userIndex = localState.users.findIndex(u => u.uid === currentUserDoc.uid);
+            if (userIndex !== -1) {
+                localState.users[userIndex].password = newPass;
+            }
+
+            saveLocalState();
+            localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
+
+            document.getElementById('pass-current').value = '';
+            document.getElementById('pass-new').value = '';
+            document.getElementById('pass-confirm').value = '';
+
+            showToast("Lozinka je uspešno izmenjena!", "success");
+        });
+
+        window.generateInviteCode = function() {
+            const randomCode = 'VIP-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            localState.invites.push({
+                id: 'inv-' + Math.random().toString(36).substring(2, 9),
+                code: randomCode,
+                used: false,
+                createdBy: currentUserDoc.email,
+                createdAt: new Date().toISOString()
+            });
+            saveLocalState();
+            renderAllData();
+            showToast(`Generisan novi kod: ${randomCode}`, "success");
+        };
+
+        function renderInviteCodes(invites) {
+            const container = document.getElementById('invite-codes-list');
+            if (!container) return;
+
+            if (invites.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-gray-500 py-4 text-sm">Nema kodova. Kliknite na dugme iznad da napravite novi.</p>`;
+                return;
+            }
+
+            container.innerHTML = invites.map(inv => `
+                <div class="p-3 bg-gray-950 border border-amber-500/30 ${inv.used ? 'opacity-50' : ''} rounded-xl flex items-center justify-between shadow-sm">
+                    <div>
+                        <span class="font-mono font-bold text-amber-400 tracking-wider block">${inv.code}</span>
+                        <span class="text-[10px] text-gray-400 font-medium">${inv.used ? 'Iskorišćeno (' + (inv.usedBy || 'Korisnik') + ')' : 'Slobodno'}</span>
+                    </div>
+                    <button onclick="navigator.clipboard.writeText('${inv.code}'); showToast('Kod je kopiran!', 'info')" title="Kopiraj kod" class="p-2 text-gray-400 hover:text-white text-xs transition">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderUsersTable(usersList) {
+            const container = document.getElementById('admin-users-table');
+            if (!container) return;
+
+            if (usersList.length === 0) {
+                container.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-gray-500">Nema registrovanih korisnika.</td></tr>`;
+                return;
+            }
+
+            container.innerHTML = usersList.map(u => {
+                const avatarIcon = u.avatarUrl 
+                    ? `<img src="${u.avatarUrl}" class="w-8 h-8 rounded-full object-cover border border-gray-700">`
+                    : `<div class="w-8 h-8 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/30 flex items-center justify-center font-bold text-xs">${(u.name || 'U').charAt(0)}</div>`;
+
+                return `
+                    <tr>
+                        <td class="py-3">${avatarIcon}</td>
+                        <td class="py-3 font-semibold text-gray-200">${u.name || 'N/A'}</td>
+                        <td class="py-3 text-gray-400 font-mono text-xs">${u.email}</td>
+                        <td class="py-3 font-bold text-emerald-400">${(u.balance || 0).toFixed(2)} €</td>
+                        <td class="py-3 text-gray-300">${u.adsWatched || 0}</td>
+                        <td class="py-3 text-right">
+                            <span class="px-2.5 py-1 ${u.role === 'admin' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'bg-gray-800 text-gray-300'} rounded-lg text-xs font-semibold">
+                                ${u.role || 'user'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initAuth();
+        });
+    </script>
+</body>
+</html>
