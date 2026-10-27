@@ -657,6 +657,20 @@
                 console.error("Greška pri kreiranju Supabase klijenta:", err);
             }
 
+            // Automatsko praćenje i osvežavanje sesije od strane Supabase-a
+            supabaseClient.auth.onAuthStateChange(async (event, session) => {
+                if (session) {
+                    currentUser = session.user;
+                    await fetchUserProfile();
+                    renderNav();
+                } else {
+                    currentUser = null;
+                    currentUserProfile = null;
+                    renderNav();
+                    navigateTo('auth');
+                }
+            });
+
             await initAuth();
             setupEventListeners();
         });
@@ -689,7 +703,6 @@
             if (data) currentUserProfile = data;
         }
 
-        // AKO KLIKNE NA LOGO
         window.handleLogoClick = function() {
             if (currentUser) {
                 navigateTo('dashboard');
@@ -699,7 +712,6 @@
         };
 
         window.navigateTo = function(screenName) {
-            // Ako korisnik nije ulogovan, a pokušava da otvori bilo šta sem 'auth', vrati ga na auth
             if (!currentUser && screenName !== 'auth') {
                 navigateTo('auth');
                 return;
@@ -794,7 +806,6 @@
                     if (activeViewMode === 'admin') switchViewMode('user');
                 }
             } else {
-                // VRAĆEN STARINSKI NATPIS ZA POZIVNICU
                 container.innerHTML = `
                     <span class="text-xs text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 font-semibold">
                         <i class="fa-solid fa-lock text-xs mr-1"></i> Pozivnica
