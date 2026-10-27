@@ -41,13 +41,13 @@
         }
     </style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen dark:bg-gray-950 dark:text-gray-100 bg-gray-50 text-gray-900 transition-colors duration-300 flex flex-col">
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col">
 
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
 
     <!-- Navigation Header -->
-    <nav class="border-b border-gray-800 bg-gray-900/90 dark:bg-gray-900/90 dark:border-gray-800 bg-white/90 border-gray-200 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300">
+    <nav class="border-b border-gray-800 bg-gray-900/90 backdrop-blur-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo & Brand -->
@@ -88,9 +88,7 @@
                     </button>
 
                     <!-- Dynamic Logout/Status Bar -->
-                    <div id="nav-auth-container" class="flex items-center gap-2">
-                        <!-- Loaded via JS -->
-                    </div>
+                    <div id="nav-auth-container" class="flex items-center gap-2"></div>
 
                     <!-- Mobile Hamburger Button -->
                     <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 transition">
@@ -152,7 +150,7 @@
                 <form id="form-register" class="space-y-4 hidden">
                     <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400 text-xs flex items-start gap-2 mb-2">
                         <i class="fa-solid fa-shield-halved text-base mt-0.5"></i>
-                        <span>Platforma je privatna preko Supabase baze. Registracija zahteva važeći <strong>Kod Pozivnice</strong>.</span>
+                        <span>Platforma je privatna. Registracija zahteva važeći <strong>Kod Pozivnice</strong>.</span>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-1">Ime / Korisničko ime</label>
@@ -199,7 +197,7 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-purple-300">Admin Režim Aktivan</h4>
-                        <p class="text-xs text-purple-200">Upravljanje pozivnicama, korisnicima i ručno odobravanje isplata preko baze.</p>
+                        <p class="text-xs text-purple-200">Upravljanje pozivnicama, korisnicima i isplatama preko baze.</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -250,7 +248,7 @@
                             <h3 class="text-xl font-bold text-white flex items-center gap-2">
                                 <i class="fa-solid fa-play text-brand-500"></i> Gledaj Reklame i Zaradi Novac
                             </h3>
-                            <p class="text-sm text-gray-400 mt-1">Svaka odgledana reklama dodaje <strong>0.05 €</strong> na vaš saldo u bazi.</p>
+                            <p class="text-sm text-gray-400 mt-1">Svaka odgledana reklama dodaje <strong>0.05 €</strong> na vaš saldo.</p>
                         </div>
                         <button id="btn-start-ad" onclick="startAdWatcher()" class="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition shadow-lg shadow-brand-600/20 flex items-center gap-2 justify-center">
                             <i class="fa-solid fa-circle-play"></i> Pokreni Reklamu (0.05 €)
@@ -341,7 +339,7 @@
                             <h3 class="text-xl font-bold text-white flex items-center gap-2">
                                 <i class="fa-solid fa-key text-amber-400"></i> Upravljanje Pozivnicama (Invite Codes)
                             </h3>
-                            <p class="text-sm text-gray-400 mt-1">Generišite kodove za nove korisnike direktno u bazi.</p>
+                            <p class="text-sm text-gray-400 mt-1">Generišite kodove za nove korisnike.</p>
                         </div>
                         <button onclick="generateInviteCode()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center gap-2 justify-center">
                             <i class="fa-solid fa-plus"></i> Generiši Novi Kod
@@ -394,7 +392,7 @@
             </div>
         </div>
 
-        <!-- 3. PROFILE SCREEN (MOJ PROFIL) -->
+        <!-- 3. PROFILE SCREEN -->
         <div id="screen-profile" class="hidden space-y-8">
             <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 sm:p-8 shadow-sm">
                 <div class="flex flex-col md:flex-row items-center gap-6">
@@ -412,9 +410,8 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">
-                        <i class="fa-solid fa-camera text-brand-500"></i> Izaberi ili Učitaj Sliku Profila
+                        <i class="fa-solid fa-camera text-brand-500"></i> Izaberi Sliku Profila
                     </h3>
-                    <p class="text-xs text-gray-400 mb-4">Izaberite neku od ponuđenih slika.</p>
                     <div class="flex flex-wrap gap-3 mb-6" id="avatar-presets-box"></div>
                 </div>
 
@@ -454,7 +451,7 @@
             </div>
         </div>
 
-        <!-- 4. DONATIONS SCREEN (PODRŽI PLATFORMU) -->
+        <!-- 4. DONATIONS SCREEN -->
         <div id="screen-donations" class="hidden space-y-8">
             <div class="bg-gradient-to-r from-rose-950/40 via-purple-950/30 to-indigo-950/40 border border-rose-500/20 rounded-2xl p-6 sm:p-8 shadow-md">
                 <div class="max-w-3xl">
@@ -463,7 +460,7 @@
                     </div>
                     <h2 class="text-3xl font-extrabold text-white">Podržite Dalji Rad AdEarn Platforme</h2>
                     <p class="text-gray-300 mt-2 text-sm sm:text-base leading-relaxed">
-                        Vaše donacije pomažu pokrivanju troškova servera, održavanju sigurnosti sistema i ubrzavanju isplata za sve članove naše zajednice.
+                        Vaše donacije pomažu pokrivanju troškova servera i održavanju sigurnosti sistema.
                     </p>
                 </div>
             </div>
@@ -533,7 +530,7 @@
 
                             <div class="p-3 bg-gray-950 rounded-xl border border-gray-800">
                                 <div class="flex items-center justify-between text-xs font-bold mb-1">
-                                    <span class="text-purple-400 flex items-center gap-1.5"><i class="fa-brands fa-ethereum"></i> Ethereum (ETH / ERC-20)</span>
+                                    <span class="text-purple-400 flex items-center gap-1.5"><i class="fa-brands fa-ethereum"></i> Ethereum (ETH)</span>
                                     <button onclick="navigator.clipboard.writeText('0x71C7656EC7ab88b098defB751B7401B5f6d8976F'); showToast('ETH Adresa kopirana!', 'info')" class="text-gray-400 hover:text-white">Kopiraj</button>
                                 </div>
                                 <p class="text-[11px] font-mono text-gray-500 truncate">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</p>
@@ -550,14 +547,13 @@
 
     </main>
 
-    <!-- Supabase & App Engine Script -->
+    <!-- JavaScript Application Engine -->
     <script>
-        // Vaši Supabase kredencijali
+        // Globalne promenljive definisane samo jednom
         const SUPABASE_URL = 'https://uqsxwszjjqgtinsbnqil.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxc3h3c3pqanFndGluc2JucWlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMzE0MTksImV4cCI6MjEwODcwNzQxOX0.AjmCFcYR0a_MpgNBdjqZZrFEJfVlKtXD8RnRn9e_DZM';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+        let supabaseClient = null;
         let selectedDonationValue = 10;
         let currentUser = null;
         let currentUserProfile = null;
@@ -626,6 +622,7 @@
 
         window.showToast = function(message, type = 'info') {
             const container = document.getElementById('toast-container');
+            if (!container) return;
             const toast = document.createElement('div');
             
             const bgClass = type === 'success' ? 'bg-emerald-900 border-emerald-500 text-emerald-100' :
@@ -646,9 +643,30 @@
             }, 4000);
         };
 
-        // Inicijalizacija Supabase sesije
+        // Inicijalizacija aplikacije i event listener-a
+        window.addEventListener('DOMContentLoaded', async () => {
+            initTheme();
+
+            // Bezbedna inicijalizacija Supabase klijenta
+            try {
+                if (window.supabase && window.supabase.createClient) {
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                } else {
+                    console.error("Supabase biblioteka nije učitana!");
+                    showToast("Greška pri učitavanju baze podataka.", "error");
+                    return;
+                }
+            } catch (err) {
+                console.error("Greška pri kreiranju Supabase klijenta:", err);
+            }
+
+            await initAuth();
+            setupEventListeners();
+        });
+
         async function initAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
+            if (!supabaseClient) return;
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 currentUser = session.user;
                 await fetchUserProfile();
@@ -662,16 +680,14 @@
         }
 
         async function fetchUserProfile() {
-            if (!currentUser) return;
-            const { data, error } = await supabase
+            if (!currentUser || !supabaseClient) return;
+            const { data } = await supabaseClient
                 .from('profiles')
                 .select('*')
                 .eq('id', currentUser.id)
                 .single();
 
-            if (data) {
-                currentUserProfile = data;
-            }
+            if (data) currentUserProfile = data;
         }
 
         window.navigateTo = function(screenName) {
@@ -704,31 +720,51 @@
             const resetClass = "px-3.5 py-2 rounded-xl text-sm font-semibold text-gray-300 hover:text-white flex items-center gap-2 transition";
             const activeClass = "px-3.5 py-2 rounded-xl text-sm font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20 flex items-center gap-2 transition";
 
-            btnDashboard.className = resetClass;
-            btnProfile.className = resetClass;
-            btnDonations.className = resetClass;
+            if (btnDashboard) btnDashboard.className = resetClass;
+            if (btnProfile) btnProfile.className = resetClass;
+            if (btnDonations) btnDonations.className = resetClass;
 
             if (screenName === 'profile') {
                 screenDashboard.classList.add('hidden');
                 screenDonations.classList.add('hidden');
                 screenProfile.classList.remove('hidden');
-                btnProfile.className = activeClass;
+                if (btnProfile) btnProfile.className = activeClass;
                 renderProfileData();
             } else if (screenName === 'donations') {
                 screenDashboard.classList.add('hidden');
                 screenProfile.classList.add('hidden');
                 screenDonations.classList.remove('hidden');
-                btnDonations.className = activeClass;
+                if (btnDonations) btnDonations.className = activeClass;
             } else {
                 screenProfile.classList.add('hidden');
                 screenDonations.classList.add('hidden');
                 screenDashboard.classList.remove('hidden');
-                btnDashboard.className = activeClass;
+                if (btnDashboard) btnDashboard.className = activeClass;
+            }
+        };
+
+        window.switchAuthTab = function(tab) {
+            const loginBtn = document.getElementById('tab-login-btn');
+            const regBtn = document.getElementById('tab-register-btn');
+            const loginForm = document.getElementById('form-login');
+            const regForm = document.getElementById('form-register');
+
+            if (tab === 'login') {
+                loginBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-brand-500 text-brand-500 transition";
+                regBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition";
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+            } else {
+                regBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-brand-500 text-brand-500 transition";
+                loginBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition";
+                regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
             }
         };
 
         function renderNav() {
             const container = document.getElementById('nav-auth-container');
+            if (!container) return;
             if (currentUser) {
                 container.innerHTML = `
                     <button onclick="handleLogout()" title="Odjavi se" class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl text-xs font-semibold transition border border-gray-700 flex items-center gap-1.5">
@@ -784,109 +820,153 @@
             }
         };
 
-        window.switchAuthTab = function(tab) {
-            const loginBtn = document.getElementById('tab-login-btn');
-            const regBtn = document.getElementById('tab-register-btn');
-            const loginForm = document.getElementById('form-login');
-            const regForm = document.getElementById('form-register');
+        function setupEventListeners() {
+            // LOGIN SUBMIT
+            document.getElementById('form-login').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!supabaseClient) return;
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-password').value;
 
-            if (tab === 'login') {
-                loginBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-brand-500 text-brand-500 transition";
-                regBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition";
-                loginForm.classList.remove('hidden');
-                regForm.classList.add('hidden');
-            } else {
-                regBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-brand-500 text-brand-500 transition";
-                loginBtn.className = "flex-1 py-3 font-semibold text-center border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition";
-                regForm.classList.remove('hidden');
-                loginForm.classList.add('hidden');
-            }
-        };
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) {
+                    showToast("Greška pri prijavi: " + error.message, "error");
+                } else {
+                    currentUser = data.user;
+                    await fetchUserProfile();
+                    renderNav();
+                    navigateTo('dashboard');
+                    loadAllAppData();
+                    showToast("Uspešna prijava! Dobrodošli.", "success");
+                }
+            });
 
-        // LOGIN PREKO SUPABASE AUTH
-        document.getElementById('form-login').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
+            // REGISTER SUBMIT
+            document.getElementById('form-register').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!supabaseClient) return;
+                const name = document.getElementById('reg-name').value.trim();
+                const email = document.getElementById('reg-email').value.trim();
+                const password = document.getElementById('reg-password').value;
+                const inviteCode = document.getElementById('reg-invite').value.trim().toUpperCase();
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) {
-                showToast("Greška pri prijavi: " + error.message, "error");
-            } else {
-                currentUser = data.user;
+                const { data: inviteData, error: inviteErr } = await supabaseClient
+                    .from('invites')
+                    .select('*')
+                    .eq('code', inviteCode)
+                    .eq('used', false)
+                    .single();
+
+                if (inviteErr || !inviteData) {
+                    showToast("Nevalidan ili iskorišćen Kod Pozivnice!", "error");
+                    return;
+                }
+
+                const { data: authData, error: authErr } = await supabaseClient.auth.signUp({ email, password });
+                if (authErr) {
+                    showToast("Greška pri registraciji: " + authErr.message, "error");
+                    return;
+                }
+
+                const userId = authData.user ? authData.user.id : null;
+                if (!userId) {
+                    showToast("Greška pri kreiranju korisnika.", "error");
+                    return;
+                }
+
+                const randomAvatar = AVATAR_PRESETS[Math.floor(Math.random() * AVATAR_PRESETS.length)];
+
+                const { error: profileErr } = await supabaseClient.from('profiles').insert([{
+                    id: userId,
+                    name: name,
+                    email: email,
+                    balance: 0.00,
+                    ads_watched: 0,
+                    role: 'user',
+                    avatar_url: randomAvatar
+                }]);
+
+                if (profileErr) {
+                    showToast("Greška pri upisu profila: " + profileErr.message, "error");
+                    return;
+                }
+
+                await supabaseClient.from('invites').update({ used: true, used_by: email }).eq('id', inviteData.id);
+
+                currentUser = authData.user;
                 await fetchUserProfile();
                 renderNav();
                 navigateTo('dashboard');
                 loadAllAppData();
-                showToast(`Uspešna prijava! Dobrodošli.`, "success");
-            }
-        });
+                showToast("Registracija uspešna! Dobrodošli.", "success");
+            });
 
-        // REGISTRACIJA PREKO SUPABASE AUTH + KOD POZIVNICE
-        document.getElementById('form-register').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('reg-name').value.trim();
-            const email = document.getElementById('reg-email').value.trim();
-            const password = document.getElementById('reg-password').value;
-            const inviteCode = document.getElementById('reg-invite').value.trim().toUpperCase();
+            // WITHDRAW SUBMIT
+            document.getElementById('form-withdraw').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!currentUser || !currentUserProfile || !supabaseClient) return;
 
-            // Proveri kod pozivnice u bazi
-            const { data: inviteData, error: inviteErr } = await supabase
-                .from('invites')
-                .select('*')
-                .eq('code', inviteCode)
-                .eq('used', false)
-                .single();
+                const paypalEmail = document.getElementById('withdraw-paypal').value.trim();
+                const amount = parseFloat(document.getElementById('withdraw-amount').value);
 
-            if (inviteErr || !inviteData) {
-                showToast("Nevalidan ili iskorišćen Kod Pozivnice!", "error");
-                return;
-            }
+                if (amount < 1.00) {
+                    showToast("Minimalna suma za isplatu je 1.00 €.", "error");
+                    return;
+                }
 
-            // Kreiraj nalog u Supabase Auth
-            const { data: authData, error: authErr } = await supabase.auth.signUp({ email, password });
-            if (authErr) {
-                showToast("Greška pri registraciji: " + authErr.message, "error");
-                return;
-            }
+                if (amount > (currentUserProfile.balance || 0)) {
+                    showToast("Nemate dovoljno novca na saldu za ovu isplatu.", "error");
+                    return;
+                }
 
-            const userId = authData.user ? authData.user.id : null;
-            if (!userId) {
-                showToast("Greška pri kreiranju korisnika.", "error");
-                return;
-            }
+                const newBalance = parseFloat((currentUserProfile.balance - amount).toFixed(2));
 
-            const randomAvatar = AVATAR_PRESETS[Math.floor(Math.random() * AVATAR_PRESETS.length)];
+                const { error: updateErr } = await supabaseClient
+                    .from('profiles')
+                    .update({ balance: newBalance })
+                    .eq('id', currentUser.id);
 
-            // Upisi u profiles tabelu
-            const { error: profileErr } = await supabase.from('profiles').insert([{
-                id: userId,
-                name: name,
-                email: email,
-                balance: 0.00,
-                ads_watched: 0,
-                role: 'user',
-                avatar_url: randomAvatar
-            }]);
+                if (updateErr) {
+                    showToast("Greška pri isplati.", "error");
+                    return;
+                }
 
-            if (profileErr) {
-                showToast("Greška pri upisu profila: " + profileErr.message, "error");
-                return;
-            }
+                const { error: withdrawErr } = await supabaseClient.from('withdrawals').insert([{
+                    user_id: currentUser.id,
+                    user_name: currentUserProfile.name || currentUser.email,
+                    user_email: currentUser.email,
+                    paypal_email: paypalEmail,
+                    amount: amount,
+                    status: 'pending'
+                }]);
 
-            // Označi kod pozivnice kao iskorišćen
-            await supabase.from('invites').update({ used: true, used_by: email }).eq('id', inviteData.id);
+                if (!withdrawErr) {
+                    currentUserProfile.balance = newBalance;
+                    document.getElementById('withdraw-amount').value = '';
+                    updateUserUI();
+                    loadUserWithdrawals();
+                    showToast("Zahtev za isplatu podnet!", "success");
+                }
+            });
 
-            currentUser = authData.user;
-            await fetchUserProfile();
-            renderNav();
-            navigateTo('dashboard');
-            loadAllAppData();
-            showToast("Registracija uspešna! Dobrodošli.", "success");
-        });
+            // CHANGE PASSWORD
+            document.getElementById('form-change-password').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!supabaseClient) return;
+                const newPass = document.getElementById('pass-new').value;
+                const { error } = await supabaseClient.auth.updateUser({ password: newPass });
+                if (error) {
+                    showToast("Greška: " + error.message, "error");
+                } else {
+                    document.getElementById('pass-new').value = '';
+                    showToast("Lozinka uspešno izmenjena!", "success");
+                }
+            });
+        }
 
         window.handleLogout = async function() {
-            await supabase.auth.signOut();
+            if (!supabaseClient) return;
+            await supabaseClient.auth.signOut();
             currentUser = null;
             currentUserProfile = null;
             renderNav();
@@ -894,7 +974,6 @@
             showToast("Uspešno ste se odjavili.", "info");
         };
 
-        // GLEDANJE REKLAMA I DODAVANJE SARDŽA U BAZU
         window.startAdWatcher = function() {
             if (currentAdTimer) return;
 
@@ -941,13 +1020,13 @@
         };
 
         async function rewardUserForAd() {
-            if (!currentUser || !currentUserProfile) return;
+            if (!currentUser || !currentUserProfile || !supabaseClient) return;
             const rewardAmount = 0.05;
 
             const newBalance = parseFloat(((currentUserProfile.balance || 0) + rewardAmount).toFixed(2));
             const newAdsCount = (currentUserProfile.ads_watched || 0) + 1;
 
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('profiles')
                 .update({ balance: newBalance, ads_watched: newAdsCount })
                 .eq('id', currentUser.id);
@@ -956,60 +1035,11 @@
                 currentUserProfile.balance = newBalance;
                 currentUserProfile.ads_watched = newAdsCount;
                 updateUserUI();
-                showToast(`Uspešno! Dodato +${rewardAmount.toFixed(2)} € na vaš saldo u bazi!`, "success");
+                showToast(`Uspešno! Dodato +${rewardAmount.toFixed(2)} € na saldo!`, "success");
             } else {
                 showToast("Greška pri ažuriranju balansa.", "error");
             }
         }
-
-        // ISPLATE
-        document.getElementById('form-withdraw').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentUser || !currentUserProfile) return;
-
-            const paypalEmail = document.getElementById('withdraw-paypal').value.trim();
-            const amount = parseFloat(document.getElementById('withdraw-amount').value);
-
-            if (amount < 1.00) {
-                showToast("Minimalna suma za isplatu je 1.00 €.", "error");
-                return;
-            }
-
-            if (amount > (currentUserProfile.balance || 0)) {
-                showToast("Nemate dovoljno novca na saldu za ovu isplatu.", "error");
-                return;
-            }
-
-            const newBalance = parseFloat((currentUserProfile.balance - amount).toFixed(2));
-
-            // Smanji saldo u bazi i upiši zahtev za isplatu
-            const { error: updateErr } = await supabase
-                .from('profiles')
-                .update({ balance: newBalance })
-                .eq('id', currentUser.id);
-
-            if (updateErr) {
-                showToast("Greška pri isplati.", "error");
-                return;
-            }
-
-            const { error: withdrawErr } = await supabase.from('withdrawals').insert([{
-                user_id: currentUser.id,
-                user_name: currentUserProfile.name || currentUser.email,
-                user_email: currentUser.email,
-                paypal_email: paypalEmail,
-                amount: amount,
-                status: 'pending'
-            }]);
-
-            if (!withdrawErr) {
-                currentUserProfile.balance = newBalance;
-                document.getElementById('withdraw-amount').value = '';
-                updateUserUI();
-                loadUserWithdrawals();
-                showToast("Zahtev za isplatu podnet!", "success");
-            }
-        });
 
         async function loadAllAppData() {
             updateUserUI();
@@ -1018,16 +1048,14 @@
         }
 
         async function loadUserWithdrawals() {
-            if (!currentUser) return;
-            const { data, error } = await supabase
+            if (!currentUser || !supabaseClient) return;
+            const { data } = await supabaseClient
                 .from('withdrawals')
                 .select('*')
                 .eq('user_id', currentUser.id)
                 .order('created_at', { ascending: false });
 
-            if (data) {
-                renderWithdrawalsTables(data);
-            }
+            if (data) renderWithdrawalsTables(data);
         }
 
         function renderWithdrawalsTables(reqList) {
@@ -1062,29 +1090,26 @@
             if (profileTable) profileTable.innerHTML = renderRows(reqList, false);
         }
 
-        // ADMIN PANEL FUNKCIJE
         async function loadAdminData() {
-            if (currentUserProfile?.role !== 'admin') return;
+            if (currentUserProfile?.role !== 'admin' || !supabaseClient) return;
 
-            // Učitaj invite kodove
-            const { data: invites } = await supabase.from('invites').select('*');
+            const { data: invites } = await supabaseClient.from('invites').select('*');
             renderInviteCodes(invites || []);
 
-            // Učitaj sve isplate
-            const { data: withdrawals } = await supabase.from('withdrawals').select('*').order('created_at', { ascending: false });
+            const { data: withdrawals } = await supabaseClient.from('withdrawals').select('*').order('created_at', { ascending: false });
             renderAdminWithdrawals(withdrawals || []);
 
-            // Učitaj sve korisnike
-            const { data: users } = await supabase.from('profiles').select('*');
+            const { data: users } = await supabaseClient.from('profiles').select('*');
             renderUsersTable(users || []);
         }
 
-        async function generateInviteCode() {
+        window.generateInviteCode = async function() {
+            if (!supabaseClient || !currentUser) return;
             const randomCode = 'VIP-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-            await supabase.from('invites').insert([{ code: randomCode, used: false, created_by: currentUser.email }]);
+            await supabaseClient.from('invites').insert([{ code: randomCode, used: false, created_by: currentUser.email }]);
             loadAdminData();
             showToast(`Generisan kod: ${randomCode}`, "success");
-        }
+        };
 
         function renderInviteCodes(invites) {
             const container = document.getElementById('invite-codes-list');
@@ -1125,13 +1150,13 @@
         }
 
         window.processWithdrawal = async function(reqId, status, userId, amount) {
-            await supabase.from('withdrawals').update({ status }).eq('id', reqId);
+            if (!supabaseClient) return;
+            await supabaseClient.from('withdrawals').update({ status }).eq('id', reqId);
             if (status === 'rejected') {
-                // Vrati novac korisniku u bazu ako je odbijeno
-                const { data: targetUser } = await supabase.from('profiles').select('balance').eq('id', userId).single();
+                const { data: targetUser } = await supabaseClient.from('profiles').select('balance').eq('id', userId).single();
                 if (targetUser) {
                     const restoredBalance = targetUser.balance + amount;
-                    await supabase.from('profiles').update({ balance: restoredBalance }).eq('id', userId);
+                    await supabaseClient.from('profiles').update({ balance: restoredBalance }).eq('id', userId);
                 }
             }
             loadAdminData();
@@ -1169,7 +1194,7 @@
             const presetsBox = document.getElementById('avatar-presets-box');
             if (presetsBox) {
                 presetsBox.innerHTML = AVATAR_PRESETS.map(url => `
-                    <button onclick="updateUserAvatar('${url}')" class="w-9 h-9 rounded-xl overflow-hidden border-2 ${currentUserProfile.avatar_url === url ? 'border-brand-500' : 'border-gray-700'} transition">
+                    <button type="button" onclick="updateUserAvatar('${url}')" class="w-9 h-9 rounded-xl overflow-hidden border-2 ${currentUserProfile.avatar_url === url ? 'border-brand-500' : 'border-gray-700'} transition">
                         <img src="${url}" class="w-full h-full object-cover">
                     </button>
                 `).join('');
@@ -1177,30 +1202,13 @@
         }
 
         window.updateUserAvatar = async function(url) {
-            if (!currentUser) return;
-            await supabase.from('profiles').update({ avatar_url: url }).eq('id', currentUser.id);
+            if (!currentUser || !supabaseClient) return;
+            await supabaseClient.from('profiles').update({ avatar_url: url }).eq('id', currentUser.id);
             currentUserProfile.avatar_url = url;
             renderProfileData();
             updateUserUI();
             showToast("Slika profila ažurirana!", "success");
         };
-
-        document.getElementById('form-change-password').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const newPass = document.getElementById('pass-new').value;
-            const { error } = await supabase.auth.updateUser({ password: newPass });
-            if (error) {
-                showToast("Greška: " + error.message, "error");
-            } else {
-                document.getElementById('pass-new').value = '';
-                showToast("Lozinka uspešno izmenjena!", "success");
-            }
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            initTheme();
-            initAuth();
-        });
     </script>
 </body>
 </html>
