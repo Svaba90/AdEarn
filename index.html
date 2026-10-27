@@ -30,6 +30,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
@@ -75,7 +77,7 @@
                     </button>
                 </div>
 
-                <!-- Right Header Tools (Theme, Logout, Hamburger) -->
+                <!-- Right Header Tools -->
                 <div class="flex items-center gap-2">
                     <!-- Dark / Light Theme Toggle -->
                     <button id="theme-toggle" aria-label="Promeni temu" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 transition-all font-medium text-xs sm:text-sm shadow-sm">
@@ -85,7 +87,7 @@
                         <span id="theme-label-text" class="hidden sm:inline">Svetla tema</span>
                     </button>
 
-                    <!-- Dynamic Logout/Status Bar (Bez profilne ikonice u hederu) -->
+                    <!-- Dynamic Logout/Status Bar -->
                     <div id="nav-auth-container" class="flex items-center gap-2">
                         <!-- Loaded via JS -->
                     </div>
@@ -150,7 +152,7 @@
                 <form id="form-register" class="space-y-4 hidden">
                     <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-400 text-xs flex items-start gap-2 mb-2">
                         <i class="fa-solid fa-shield-halved text-base mt-0.5"></i>
-                        <span>Platforma je privatna. Registracija zahteva važeći <strong>Kod Pozivnice</strong> od administratora.</span>
+                        <span>Platforma je privatna preko Supabase baze. Registracija zahteva važeći <strong>Kod Pozivnice</strong>.</span>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-1">Ime / Korisničko ime</label>
@@ -197,7 +199,7 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-purple-300">Admin Režim Aktivan</h4>
-                        <p class="text-xs text-purple-200">Upravljanje pozivnicama, korisnicima i ručno odobravanje isplata.</p>
+                        <p class="text-xs text-purple-200">Upravljanje pozivnicama, korisnicima i ručno odobravanje isplata preko baze.</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -248,7 +250,7 @@
                             <h3 class="text-xl font-bold text-white flex items-center gap-2">
                                 <i class="fa-solid fa-play text-brand-500"></i> Gledaj Reklame i Zaradi Novac
                             </h3>
-                            <p class="text-sm text-gray-400 mt-1">Svaka odgledana reklama dodaje <strong>0.05 €</strong> na vaš saldo. Trajanje tajmera je 10 sekundi.</p>
+                            <p class="text-sm text-gray-400 mt-1">Svaka odgledana reklama dodaje <strong>0.05 €</strong> na vaš saldo u bazi.</p>
                         </div>
                         <button id="btn-start-ad" onclick="startAdWatcher()" class="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition shadow-lg shadow-brand-600/20 flex items-center gap-2 justify-center">
                             <i class="fa-solid fa-circle-play"></i> Pokreni Reklamu (0.05 €)
@@ -282,7 +284,6 @@
                                 <i class="fa-solid fa-info-circle"></i> Verifikacija i odobrenje
                             </div>
                             <p>• Isplate se šalju na vaš verifikovani PayPal nalog.</p>
-                            <p>• Zahtev pregleda i ručno odobrava administrator radi sigurnosti.</p>
                             <p>• Minimalna suma za isplatu iznosi <strong>1.00 €</strong>.</p>
                         </div>
                         <form id="form-withdraw" class="space-y-4">
@@ -340,7 +341,7 @@
                             <h3 class="text-xl font-bold text-white flex items-center gap-2">
                                 <i class="fa-solid fa-key text-amber-400"></i> Upravljanje Pozivnicama (Invite Codes)
                             </h3>
-                            <p class="text-sm text-gray-400 mt-1">Generišite kodove za nove korisnike koji žele da se registruju na platformu.</p>
+                            <p class="text-sm text-gray-400 mt-1">Generišite kodove za nove korisnike direktno u bazi.</p>
                         </div>
                         <button onclick="generateInviteCode()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center gap-2 justify-center">
                             <i class="fa-solid fa-plus"></i> Generiši Novi Kod
@@ -413,12 +414,8 @@
                     <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">
                         <i class="fa-solid fa-camera text-brand-500"></i> Izaberi ili Učitaj Sliku Profila
                     </h3>
-                    <p class="text-xs text-gray-400 mb-4">Izaberite neku od ponuđenih slika ili otpremite svoju sa uređaja (do 2MB).</p>
+                    <p class="text-xs text-gray-400 mb-4">Izaberite neku od ponuđenih slika.</p>
                     <div class="flex flex-wrap gap-3 mb-6" id="avatar-presets-box"></div>
-                    <label class="block w-full py-3 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-xl text-xs font-semibold text-center cursor-pointer transition border border-gray-700">
-                        <i class="fa-solid fa-upload mr-2"></i> Otpremi sliku sa uređaja
-                        <input type="file" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
-                    </label>
                 </div>
 
                 <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
@@ -427,19 +424,11 @@
                     </h3>
                     <form id="form-change-password" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-medium text-gray-400 mb-1">Trenutna Lozinka</label>
-                            <input type="password" id="pass-current" required class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-brand-500">
-                        </div>
-                        <div>
                             <label class="block text-xs font-medium text-gray-400 mb-1">Nova Lozinka</label>
-                            <input type="password" id="pass-new" required minlength="6" class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-brand-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-400 mb-1">Potvrdite Novu Lozinku</label>
-                            <input type="password" id="pass-confirm" required minlength="6" class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-brand-500">
+                            <input type="password" id="pass-new" required minlength="6" class="w-full bg-gray-950 border border-gray-800 text-gray-100 rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-brand-500" placeholder="Min. 6 karaktera">
                         </div>
                         <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold rounded-xl transition shadow-md shadow-brand-600/20">
-                            Sačuvaj Novu Lozinku
+                            Ažuriraj Lozinku
                         </button>
                     </form>
                 </div>
@@ -474,7 +463,7 @@
                     </div>
                     <h2 class="text-3xl font-extrabold text-white">Podržite Dalji Rad AdEarn Platforme</h2>
                     <p class="text-gray-300 mt-2 text-sm sm:text-base leading-relaxed">
-                        Vaše donacije pomažu pokrivanju troškova servera, održavanju sigurnosti sistema i ubrzavanju isplata za sve članove naše zajednice. Hvala vam što pomažete da rastemo zajedno!
+                        Vaše donacije pomažu pokrivanju troškova servera, održavanju sigurnosti sistema i ubrzavanju isplata za sve članove naše zajednice.
                     </p>
                 </div>
             </div>
@@ -552,7 +541,7 @@
                         </div>
                     </div>
 
-                    <button onclick="showToast('Hvala na podršci! Kopirajte željenu kripto adresu iznad.', 'success')" class="w-full mt-2 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90 text-gray-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+                    <button onclick="showToast('Hvala na podršci!', 'success')" class="w-full mt-2 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90 text-gray-950 font-bold rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
                         <i class="fa-solid fa-shield-heart"></i> Potvrdi Kripto Podršku
                     </button>
                 </div>
@@ -561,37 +550,19 @@
 
     </main>
 
-    <!-- JavaScript Application Engine -->
+    <!-- Supabase & App Engine Script -->
     <script>
-        const PRESET_ADMIN = {
-            username: 'Svaba90',
-            email: 'ristics134@gmail.com',
-            password: '131211'
-        };
+        // Vaši Supabase kredencijali
+        const SUPABASE_URL = 'https://uqsxwszjjqgtinsbnqil.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxc3h3c3pqanFndGluc2JucWlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMzE0MTksImV4cCI6MjEwODcwNzQxOX0.AjmCFcYR0a_MpgNBdjqZZrFEJfVlKtXD8RnRn9e_DZM';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let selectedDonationValue = 10;
-
-        window.toggleMobileMenu = function() {
-            const menu = document.getElementById('mobile-dropdown-menu');
-            menu.classList.toggle('hidden');
-        };
-
-        window.selectDonationAmount = function(amt) {
-            selectedDonationValue = amt;
-            document.querySelectorAll('.donation-amt-btn').forEach(btn => {
-                btn.classList.remove('border-brand-500', 'bg-brand-500/10', 'text-brand-400');
-            });
-            const selectedBtn = document.querySelector(`.donation-amt-btn[data-amt="${amt}"]`);
-            if (selectedBtn) {
-                selectedBtn.classList.add('border-brand-500', 'bg-brand-500/10', 'text-brand-400');
-            }
-        };
-
-        window.triggerPayPalDonationModal = function() {
-            const amtStr = selectedDonationValue === 'custom' ? 'proizvoljan iznos' : `${selectedDonationValue} €`;
-            showToast(`Hvala vam! Otvara se PayPal adresa za donaciju od ${amtStr}.`, "success");
-            window.open('https://paypal.me', '_blank');
-        };
+        let currentUser = null;
+        let currentUserProfile = null;
+        let activeViewMode = 'user';
+        let currentAdTimer = null;
 
         const AVATAR_PRESETS = [
             "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
@@ -601,43 +572,31 @@
             "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150"
         ];
 
-        let currentUser = null;
-        let currentUserDoc = null;
-        let activeViewMode = 'user';
-        let currentAdTimer = null;
-
-        let localState = JSON.parse(localStorage.getItem('adearn_local_db')) || {
-            users: [
-                {
-                    uid: "admin-svaba90-id",
-                    name: PRESET_ADMIN.username,
-                    email: PRESET_ADMIN.email,
-                    password: PRESET_ADMIN.password,
-                    balance: 100.00,
-                    adsWatched: 0,
-                    avatarUrl: AVATAR_PRESETS[0],
-                    role: "admin",
-                    createdAt: new Date().toISOString()
-                }
-            ],
-            invites: [
-                { id: "inv-1", code: "VIP-SVABA", used: false, createdBy: PRESET_ADMIN.email, createdAt: new Date().toISOString() },
-                { id: "inv-2", code: "VIP-2026", used: false, createdBy: PRESET_ADMIN.email, createdAt: new Date().toISOString() },
-                { id: "inv-3", code: "VIP-PROMO", used: false, createdBy: PRESET_ADMIN.email, createdAt: new Date().toISOString() }
-            ],
-            withdrawals: []
-        };
-
-        function saveLocalState() {
-            localStorage.setItem('adearn_local_db', JSON.stringify(localState));
-        }
-
         const mockAds = [
             { title: "Kripto Menjačnica Srbija", desc: "Kupite i prodajte Bitcoin uz najniže provizije u regionu!", icon: "fa-coins", bg: "from-amber-600/20 to-orange-600/20", btnText: "Poseti Menjačnicu" },
             { title: "TechStore Online Prodavnica", desc: "Najnoviji telefoni i laptopovi sa popustom do 40% ove nedelje.", icon: "fa-laptop", bg: "from-blue-600/20 to-cyan-600/20", btnText: "Pogledaj Ponudu" },
             { title: "FitLife Teretane & Proteini", desc: "Započnite transformaciju već danas uz besplatan prvi trening.", icon: "fa-dumbbell", bg: "from-red-600/20 to-rose-600/20", btnText: "Preuzmi Karticu" },
             { title: "Web Hosting Srbija Pro", desc: "Brz i pouzdan cloud hosting sa besplatnim SSL sertifikatom.", icon: "fa-server", bg: "from-purple-600/20 to-indigo-600/20", btnText: "Saznaj Više" }
         ];
+
+        window.toggleMobileMenu = function() {
+            document.getElementById('mobile-dropdown-menu').classList.toggle('hidden');
+        };
+
+        window.selectDonationAmount = function(amt) {
+            selectedDonationValue = amt;
+            document.querySelectorAll('.donation-amt-btn').forEach(btn => {
+                btn.classList.remove('border-brand-500', 'bg-brand-500/10', 'text-brand-400');
+            });
+            const selectedBtn = document.querySelector(`.donation-amt-btn[data-amt="${amt}"]`);
+            if (selectedBtn) selectedBtn.classList.add('border-brand-500', 'bg-brand-500/10', 'text-brand-400');
+        };
+
+        window.triggerPayPalDonationModal = function() {
+            const amtStr = selectedDonationValue === 'custom' ? 'proizvoljan iznos' : `${selectedDonationValue} €`;
+            showToast(`Hvala vam! Otvara se PayPal adresa za donaciju od ${amtStr}.`, "success");
+            window.open('https://paypal.me', '_blank');
+        };
 
         function applyTheme(theme) {
             const html = document.documentElement;
@@ -659,7 +618,6 @@
         function initTheme() {
             const savedTheme = localStorage.getItem('adearn_theme') || 'dark';
             applyTheme(savedTheme);
-
             document.getElementById('theme-toggle').addEventListener('click', () => {
                 const isDark = document.documentElement.classList.contains('dark');
                 applyTheme(isDark ? 'light' : 'dark');
@@ -688,28 +646,32 @@
             }, 4000);
         };
 
-        function initAuth() {
-            const savedSession = JSON.parse(localStorage.getItem('adearn_session'));
-            if (savedSession) {
-                currentUserDoc = savedSession;
-                currentUser = { uid: savedSession.uid, email: savedSession.email };
+        // Inicijalizacija Supabase sesije
+        async function initAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                await fetchUserProfile();
                 renderNav();
                 navigateTo('dashboard');
-                renderAllData();
-                return;
+                loadAllAppData();
+            } else {
+                navigateTo('auth');
+                renderNav();
             }
-
-            navigateTo('auth');
-            renderNav();
         }
 
-        function renderAllData() {
-            if (!currentUserDoc) return;
-            updateUserUI();
-            renderWithdrawalsTables();
-            renderInviteCodes(localState.invites);
-            renderUsersTable(localState.users);
-            renderProfileData();
+        async function fetchUserProfile() {
+            if (!currentUser) return;
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (data) {
+                currentUserProfile = data;
+            }
         }
 
         window.navigateTo = function(screenName) {
@@ -757,7 +719,7 @@
                 screenProfile.classList.add('hidden');
                 screenDonations.classList.remove('hidden');
                 btnDonations.className = activeClass;
-            } else { // 'dashboard'
+            } else {
                 screenProfile.classList.add('hidden');
                 screenDonations.classList.add('hidden');
                 screenDashboard.classList.remove('hidden');
@@ -767,51 +729,54 @@
 
         function renderNav() {
             const container = document.getElementById('nav-auth-container');
-            if (currentUserDoc) {
-                // Uklonjena profilna slika iz hedera, ostavljeno dugme za odjavu i status
+            if (currentUser) {
                 container.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <button onclick="handleLogout()" title="Odjavi se" class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl text-xs font-semibold transition border border-gray-700 flex items-center gap-1.5">
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                            <span class="hidden sm:inline">Odjava</span>
-                        </button>
-                    </div>
+                    <button onclick="handleLogout()" title="Odjavi se" class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl text-xs font-semibold transition border border-gray-700 flex items-center gap-1.5">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span class="hidden sm:inline">Odjava</span>
+                    </button>
                 `;
 
-                if (currentUserDoc.role === 'admin') {
+                if (currentUserProfile?.role === 'admin') {
                     document.getElementById('admin-banner').classList.remove('hidden');
                 } else {
                     document.getElementById('admin-banner').classList.add('hidden');
+                    if (activeViewMode === 'admin') switchViewMode('user');
                 }
             } else {
                 container.innerHTML = `
                     <span class="text-xs text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20 font-semibold">
-                        <i class="fa-solid fa-lock text-xs mr-1"></i> Pozivnica
+                        <i class="fa-solid fa-lock text-xs mr-1"></i> Supabase Auth
                     </span>
                 `;
             }
         }
 
         function updateUserUI() {
-            if (!currentUserDoc) return;
-            document.getElementById('user-balance').innerText = `${(currentUserDoc.balance || 0).toFixed(2)} €`;
-            document.getElementById('user-ads-count').innerText = currentUserDoc.adsWatched || 0;
+            if (!currentUserProfile) return;
+            document.getElementById('user-balance').innerText = `${(currentUserProfile.balance || 0).toFixed(2)} €`;
+            document.getElementById('user-ads-count').innerText = currentUserProfile.ads_watched || 0;
 
             const statusAvatarBox = document.getElementById('user-status-avatar-box');
             if (statusAvatarBox) {
-                if (currentUserDoc.avatarUrl) {
-                    statusAvatarBox.innerHTML = `<img src="${currentUserDoc.avatarUrl}" class="w-full h-full object-cover rounded-2xl">`;
+                if (currentUserProfile.avatar_url) {
+                    statusAvatarBox.innerHTML = `<img src="${currentUserProfile.avatar_url}" class="w-full h-full object-cover rounded-2xl">`;
                 } else {
-                    statusAvatarBox.innerHTML = `<span class="font-bold text-lg">${(currentUserDoc.name || 'VIP').charAt(0)}</span>`;
+                    statusAvatarBox.innerHTML = `<span class="font-bold text-lg">${(currentUserProfile.name || 'VIP').charAt(0)}</span>`;
                 }
             }
         }
 
         window.switchViewMode = function(mode) {
+            if (mode === 'admin' && currentUserProfile?.role !== 'admin') {
+                showToast("Nemate admin ovlašćenja u bazi!", "error");
+                return;
+            }
             activeViewMode = mode;
             if (mode === 'admin') {
                 document.getElementById('view-user-content').classList.add('hidden');
                 document.getElementById('view-admin-content').classList.remove('hidden');
+                loadAdminData();
                 showToast("Otvoren Admin Panel", "info");
             } else {
                 document.getElementById('view-user-content').classList.remove('hidden');
@@ -838,108 +803,98 @@
             }
         };
 
-        document.getElementById('form-login').addEventListener('submit', (e) => {
+        // LOGIN PREKO SUPABASE AUTH
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
 
-            if (email === PRESET_ADMIN.email.toLowerCase() && password === PRESET_ADMIN.password) {
-                let adminUser = localState.users.find(u => u.email.toLowerCase() === PRESET_ADMIN.email.toLowerCase());
-                if (!adminUser) {
-                    adminUser = {
-                        uid: "admin-svaba90-id",
-                        name: PRESET_ADMIN.username,
-                        email: PRESET_ADMIN.email,
-                        password: PRESET_ADMIN.password,
-                        balance: 100.00,
-                        adsWatched: 0,
-                        avatarUrl: AVATAR_PRESETS[0],
-                        role: "admin",
-                        createdAt: new Date().toISOString()
-                    };
-                    localState.users.push(adminUser);
-                    saveLocalState();
-                }
-                currentUserDoc = adminUser;
-                currentUser = { uid: adminUser.uid, email: adminUser.email };
-                localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
-                renderNav();
-                navigateTo('dashboard');
-                renderAllData();
-                showToast(`Dobrodošli nazad Developer/Admin ${PRESET_ADMIN.username}!`, "success");
-                return;
-            }
-
-            const userMatch = localState.users.find(u => u.email.toLowerCase() === email && u.password === password);
-            if (userMatch) {
-                currentUserDoc = userMatch;
-                currentUser = { uid: userMatch.uid, email: userMatch.email };
-                localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
-                renderNav();
-                navigateTo('dashboard');
-                renderAllData();
-                showToast(`Uspešna prijava! Dobrodošli ${userMatch.name}.`, "success");
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                showToast("Greška pri prijavi: " + error.message, "error");
             } else {
-                showToast("Greška pri prijavi: Proverite unete podatke.", "error");
+                currentUser = data.user;
+                await fetchUserProfile();
+                renderNav();
+                navigateTo('dashboard');
+                loadAllAppData();
+                showToast(`Uspešna prijava! Dobrodošli.`, "success");
             }
         });
 
-        document.getElementById('form-register').addEventListener('submit', (e) => {
+        // REGISTRACIJA PREKO SUPABASE AUTH + KOD POZIVNICE
+        document.getElementById('form-register').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('reg-name').value.trim();
-            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const email = document.getElementById('reg-email').value.trim();
             const password = document.getElementById('reg-password').value;
             const inviteCode = document.getElementById('reg-invite').value.trim().toUpperCase();
 
-            if (localState.users.some(u => u.email.toLowerCase() === email)) {
-                showToast("Korisnik sa ovim emailom već postoji!", "error");
-                return;
-            }
+            // Proveri kod pozivnice u bazi
+            const { data: inviteData, error: inviteErr } = await supabase
+                .from('invites')
+                .select('*')
+                .eq('code', inviteCode)
+                .eq('used', false)
+                .single();
 
-            const validInvite = localState.invites.find(i => i.code === inviteCode && !i.used);
-            if (!validInvite) {
+            if (inviteErr || !inviteData) {
                 showToast("Nevalidan ili iskorišćen Kod Pozivnice!", "error");
                 return;
             }
 
-            validInvite.used = true;
-            validInvite.usedBy = email;
-            validInvite.usedAt = new Date().toISOString();
+            // Kreiraj nalog u Supabase Auth
+            const { data: authData, error: authErr } = await supabase.auth.signUp({ email, password });
+            if (authErr) {
+                showToast("Greška pri registraciji: " + authErr.message, "error");
+                return;
+            }
 
-            const newUser = {
-                uid: 'usr-' + Math.random().toString(36).substring(2, 9),
+            const userId = authData.user ? authData.user.id : null;
+            if (!userId) {
+                showToast("Greška pri kreiranju korisnika.", "error");
+                return;
+            }
+
+            const randomAvatar = AVATAR_PRESETS[Math.floor(Math.random() * AVATAR_PRESETS.length)];
+
+            // Upisi u profiles tabelu
+            const { error: profileErr } = await supabase.from('profiles').insert([{
+                id: userId,
                 name: name,
                 email: email,
-                password: password,
                 balance: 0.00,
-                adsWatched: 0,
-                avatarUrl: AVATAR_PRESETS[Math.floor(Math.random() * AVATAR_PRESETS.length)],
+                ads_watched: 0,
                 role: 'user',
-                createdAt: new Date().toISOString()
-            };
+                avatar_url: randomAvatar
+            }]);
 
-            localState.users.push(newUser);
-            saveLocalState();
+            if (profileErr) {
+                showToast("Greška pri upisu profila: " + profileErr.message, "error");
+                return;
+            }
 
-            currentUserDoc = newUser;
-            currentUser = { uid: newUser.uid, email: newUser.email };
-            localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
+            // Označi kod pozivnice kao iskorišćen
+            await supabase.from('invites').update({ used: true, used_by: email }).eq('id', inviteData.id);
 
+            currentUser = authData.user;
+            await fetchUserProfile();
             renderNav();
             navigateTo('dashboard');
-            renderAllData();
-            showToast("Registracija uspešna! Dobrodošli na AdEarn Srbija.", "success");
+            loadAllAppData();
+            showToast("Registracija uspešna! Dobrodošli.", "success");
         });
 
-        window.handleLogout = function() {
-            localStorage.removeItem('adearn_session');
+        window.handleLogout = async function() {
+            await supabase.auth.signOut();
             currentUser = null;
-            currentUserDoc = null;
+            currentUserProfile = null;
             renderNav();
             navigateTo('auth');
             showToast("Uspešno ste se odjavili.", "info");
         };
 
+        // GLEDANJE REKLAMA I DODAVANJE SARDŽA U BAZU
         window.startAdWatcher = function() {
             if (currentAdTimer) return;
 
@@ -957,9 +912,6 @@
                 </div>
                 <h4 class="text-xl font-bold text-white">${ad.title}</h4>
                 <p class="text-sm text-gray-400 max-w-md mt-2 mb-4">${ad.desc}</p>
-                <button class="px-5 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-xl text-xs font-semibold transition" onclick="showToast('Sponzorisana stranica je otvorena.', 'info')">
-                    ${ad.btnText} <i class="fa-solid fa-external-link text-[10px] ml-1"></i>
-                </button>
             `;
 
             playerBox.classList.remove('hidden');
@@ -970,7 +922,7 @@
             timerEl.innerText = timeLeft;
             progressBar.style.width = '0%';
 
-            currentAdTimer = setInterval(() => {
+            currentAdTimer = setInterval(async () => {
                 timeLeft--;
                 timerEl.innerText = timeLeft;
                 progressBar.style.width = `${((10 - timeLeft) / 10) * 100}%`;
@@ -979,7 +931,7 @@
                     clearInterval(currentAdTimer);
                     currentAdTimer = null;
 
-                    rewardUserForAd();
+                    await rewardUserForAd();
 
                     playerBox.classList.add('hidden');
                     startBtn.disabled = false;
@@ -988,28 +940,32 @@
             }, 1000);
         };
 
-        function rewardUserForAd() {
-            if (!currentUserDoc) return;
+        async function rewardUserForAd() {
+            if (!currentUser || !currentUserProfile) return;
             const rewardAmount = 0.05;
 
-            currentUserDoc.balance = parseFloat(((currentUserDoc.balance || 0) + rewardAmount).toFixed(2));
-            currentUserDoc.adsWatched = (currentUserDoc.adsWatched || 0) + 1;
+            const newBalance = parseFloat(((currentUserProfile.balance || 0) + rewardAmount).toFixed(2));
+            const newAdsCount = (currentUserProfile.ads_watched || 0) + 1;
 
-            const userIndex = localState.users.findIndex(u => u.uid === currentUserDoc.uid);
-            if (userIndex !== -1) {
-                localState.users[userIndex].balance = currentUserDoc.balance;
-                localState.users[userIndex].adsWatched = currentUserDoc.adsWatched;
+            const { error } = await supabase
+                .from('profiles')
+                .update({ balance: newBalance, ads_watched: newAdsCount })
+                .eq('id', currentUser.id);
+
+            if (!error) {
+                currentUserProfile.balance = newBalance;
+                currentUserProfile.ads_watched = newAdsCount;
+                updateUserUI();
+                showToast(`Uspešno! Dodato +${rewardAmount.toFixed(2)} € na vaš saldo u bazi!`, "success");
+            } else {
+                showToast("Greška pri ažuriranju balansa.", "error");
             }
-            saveLocalState();
-            localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
-
-            renderAllData();
-            showToast(`Uspešno! Dodato +${rewardAmount.toFixed(2)} € na vaš saldo!`, "success");
         }
 
-        document.getElementById('form-withdraw').addEventListener('submit', (e) => {
+        // ISPLATE
+        document.getElementById('form-withdraw').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!currentUserDoc) return;
+            if (!currentUser || !currentUserProfile) return;
 
             const paypalEmail = document.getElementById('withdraw-paypal').value.trim();
             const amount = parseFloat(document.getElementById('withdraw-amount').value);
@@ -1019,295 +975,227 @@
                 return;
             }
 
-            if (amount > (currentUserDoc.balance || 0)) {
+            if (amount > (currentUserProfile.balance || 0)) {
                 showToast("Nemate dovoljno novca na saldu za ovu isplatu.", "error");
                 return;
             }
 
-            currentUserDoc.balance = parseFloat((currentUserDoc.balance - amount).toFixed(2));
-            const userIndex = localState.users.findIndex(u => u.uid === currentUserDoc.uid);
-            if (userIndex !== -1) {
-                localState.users[userIndex].balance = currentUserDoc.balance;
+            const newBalance = parseFloat((currentUserProfile.balance - amount).toFixed(2));
+
+            // Smanji saldo u bazi i upiši zahtev za isplatu
+            const { error: updateErr } = await supabase
+                .from('profiles')
+                .update({ balance: newBalance })
+                .eq('id', currentUser.id);
+
+            if (updateErr) {
+                showToast("Greška pri isplati.", "error");
+                return;
             }
 
-            const newWithdrawal = {
-                id: 'req-' + Math.random().toString(36).substring(2, 9),
-                userId: currentUserDoc.uid,
-                userName: currentUserDoc.name || currentUserDoc.email,
-                userEmail: currentUserDoc.email,
-                paypalEmail: paypalEmail,
+            const { error: withdrawErr } = await supabase.from('withdrawals').insert([{
+                user_id: currentUser.id,
+                user_name: currentUserProfile.name || currentUser.email,
+                user_email: currentUser.email,
+                paypal_email: paypalEmail,
                 amount: amount,
-                status: 'pending',
-                requestedAt: new Date().toISOString()
-            };
+                status: 'pending'
+            }]);
 
-            localState.withdrawals.push(newWithdrawal);
-            saveLocalState();
-            localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
-
-            document.getElementById('withdraw-amount').value = '';
-            renderAllData();
-            showToast("Zahtev za isplatu podnet! Administrator će verifikovati podatke.", "success");
+            if (!withdrawErr) {
+                currentUserProfile.balance = newBalance;
+                document.getElementById('withdraw-amount').value = '';
+                updateUserUI();
+                loadUserWithdrawals();
+                showToast("Zahtev za isplatu podnet!", "success");
+            }
         });
 
-        function renderWithdrawalsTables() {
+        async function loadAllAppData() {
+            updateUserUI();
+            await loadUserWithdrawals();
+            renderProfileData();
+        }
+
+        async function loadUserWithdrawals() {
+            if (!currentUser) return;
+            const { data, error } = await supabase
+                .from('withdrawals')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            if (data) {
+                renderWithdrawalsTables(data);
+            }
+        }
+
+        function renderWithdrawalsTables(reqList) {
             const dashTable = document.getElementById('dashboard-withdrawals-table');
             const profileTable = document.getElementById('profile-withdrawals-table');
-            const adminTable = document.getElementById('admin-withdrawals-table');
 
-            const myRequests = localState.withdrawals.filter(r => r.userId === currentUserDoc?.uid);
-
-            const renderRows = (reqList, isDashboard = false) => {
-                if (reqList.length === 0) {
-                    return `<tr><td colspan="4" class="py-4 text-center text-gray-500">Nema evidentiranih zahteva za isplatu.</td></tr>`;
+            const renderRows = (list, isDash = false) => {
+                if (list.length === 0) {
+                    return `<tr><td colspan="4" class="py-4 text-center text-gray-500">Nema zahteva.</td></tr>`;
                 }
-                const itemsToRender = isDashboard ? reqList.slice(-4).reverse() : [...reqList].reverse();
-
-                return itemsToRender.map(r => {
+                const items = isDash ? list.slice(0, 4) : list;
+                return items.map(r => {
                     const statusBadge = r.status === 'approved' 
-                        ? `<span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-semibold"><i class="fa-solid fa-check mr-1"></i> Odobreno</span>`
+                        ? `<span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-semibold">Odobreno</span>`
                         : r.status === 'rejected'
-                        ? `<span class="px-2.5 py-1 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-semibold"><i class="fa-solid fa-xmark mr-1"></i> Odbijeno</span>`
-                        : `<span class="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-lg text-xs font-semibold"><i class="fa-solid fa-clock mr-1"></i> Na Čekanju</span>`;
+                        ? `<span class="px-2.5 py-1 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-semibold">Odbijeno</span>`
+                        : `<span class="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-lg text-xs font-semibold">Na Čekanju</span>`;
 
-                    const dateObj = new Date(r.requestedAt);
-                    const dateStr = dateObj.toLocaleDateString('sr-RS') + ' ' + dateObj.toLocaleTimeString('sr-RS', { hour: '2-digit', minute: '2-digit' });
-
+                    const dateStr = new Date(r.created_at).toLocaleDateString('sr-RS');
                     return `
                         <tr>
-                            <td class="py-3 text-gray-300 font-medium text-xs">${dateStr}</td>
+                            <td class="py-3 text-gray-300 text-xs">${dateStr}</td>
                             <td class="py-3 font-bold text-white">${r.amount.toFixed(2)} €</td>
-                            <td class="py-3 text-gray-400 font-mono text-xs">${r.paypalEmail}</td>
+                            <td class="py-3 text-gray-400 font-mono text-xs">${r.paypal_email}</td>
                             <td class="py-3 text-right">${statusBadge}</td>
                         </tr>
                     `;
                 }).join('');
             };
 
-            if (dashTable) dashTable.innerHTML = renderRows(myRequests, true);
-            if (profileTable) profileTable.innerHTML = renderRows(myRequests, false);
-
-            if (adminTable) {
-                if (localState.withdrawals.length === 0) {
-                    adminTable.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-gray-500">Nema zahteva na čekanju.</td></tr>`;
-                } else {
-                    adminTable.innerHTML = [...localState.withdrawals].reverse().map(r => {
-                        const dateStr = new Date(r.requestedAt).toLocaleDateString('sr-RS');
-                        const statusBadge = r.status === 'approved' 
-                            ? `<span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-semibold">Odobreno</span>`
-                            : r.status === 'rejected'
-                            ? `<span class="px-2.5 py-1 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-semibold">Odbijeno</span>`
-                            : `<span class="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-lg text-xs font-semibold">Na Čekanju</span>`;
-
-                        const actions = r.status === 'pending' ? `
-                            <div class="flex justify-end gap-2">
-                                <button onclick="processWithdrawal('${r.id}', 'approved', '${r.userId}', ${r.amount})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition">Odobri</button>
-                                <button onclick="processWithdrawal('${r.id}', 'rejected', '${r.userId}', ${r.amount})" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-semibold transition">Odbij</button>
-                            </div>
-                        ` : `<span class="text-xs text-gray-400">Rešeno</span>`;
-
-                        return `
-                            <tr>
-                                <td class="py-3 font-semibold text-gray-200">${r.userName || r.userEmail}</td>
-                                <td class="py-3 text-gray-400 font-mono text-xs">${r.paypalEmail}</td>
-                                <td class="py-3 font-bold text-emerald-400">${r.amount.toFixed(2)} €</td>
-                                <td class="py-3 text-gray-400 text-xs">${dateStr}</td>
-                                <td class="py-3">${statusBadge}</td>
-                                <td class="py-3 text-right">${actions}</td>
-                            </tr>
-                        `;
-                    }).join('');
-                }
-            }
+            if (dashTable) dashTable.innerHTML = renderRows(reqList, true);
+            if (profileTable) profileTable.innerHTML = renderRows(reqList, false);
         }
 
-        window.processWithdrawal = function(reqId, status, reqUserId, amount) {
-            const req = localState.withdrawals.find(w => w.id === reqId);
-            if (!req) return;
+        // ADMIN PANEL FUNKCIJE
+        async function loadAdminData() {
+            if (currentUserProfile?.role !== 'admin') return;
 
-            req.status = status;
-            req.processedAt = new Date().toISOString();
+            // Učitaj invite kodove
+            const { data: invites } = await supabase.from('invites').select('*');
+            renderInviteCodes(invites || []);
 
+            // Učitaj sve isplate
+            const { data: withdrawals } = await supabase.from('withdrawals').select('*').order('created_at', { ascending: false });
+            renderAdminWithdrawals(withdrawals || []);
+
+            // Učitaj sve korisnike
+            const { data: users } = await supabase.from('profiles').select('*');
+            renderUsersTable(users || []);
+        }
+
+        async function generateInviteCode() {
+            const randomCode = 'VIP-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            await supabase.from('invites').insert([{ code: randomCode, used: false, created_by: currentUser.email }]);
+            loadAdminData();
+            showToast(`Generisan kod: ${randomCode}`, "success");
+        }
+
+        function renderInviteCodes(invites) {
+            const container = document.getElementById('invite-codes-list');
+            if (!container) return;
+            container.innerHTML = invites.map(inv => `
+                <div class="p-3 bg-gray-950 border border-amber-500/30 ${inv.used ? 'opacity-50' : ''} rounded-xl flex items-center justify-between shadow-sm">
+                    <div>
+                        <span class="font-mono font-bold text-amber-400 block">${inv.code}</span>
+                        <span class="text-[10px] text-gray-400">${inv.used ? 'Iskorišćeno' : 'Slobodno'}</span>
+                    </div>
+                    <button onclick="navigator.clipboard.writeText('${inv.code}'); showToast('Kod kopiran!', 'info')" class="p-2 text-gray-400 hover:text-white text-xs"><i class="fa-solid fa-copy"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function renderAdminWithdrawals(withdrawals) {
+            const container = document.getElementById('admin-withdrawals-table');
+            if (!container) return;
+            container.innerHTML = withdrawals.map(r => {
+                const actions = r.status === 'pending' ? `
+                    <div class="flex justify-end gap-2">
+                        <button onclick="processWithdrawal('${r.id}', 'approved', '${r.user_id}', ${r.amount})" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs">Odobri</button>
+                        <button onclick="processWithdrawal('${r.id}', 'rejected', '${r.user_id}', ${r.amount})" class="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs">Odbij</button>
+                    </div>
+                ` : `<span class="text-xs text-gray-400">Rešeno</span>`;
+
+                return `
+                    <tr>
+                        <td class="py-3 font-semibold text-gray-200">${r.user_name || r.user_email}</td>
+                        <td class="py-3 text-gray-400 font-mono text-xs">${r.paypal_email}</td>
+                        <td class="py-3 font-bold text-emerald-400">${r.amount.toFixed(2)} €</td>
+                        <td class="py-3 text-gray-400 text-xs">${new Date(r.created_at).toLocaleDateString('sr-RS')}</td>
+                        <td class="py-3">${r.status}</td>
+                        <td class="py-3 text-right">${actions}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.processWithdrawal = async function(reqId, status, userId, amount) {
+            await supabase.from('withdrawals').update({ status }).eq('id', reqId);
             if (status === 'rejected') {
-                const targetUser = localState.users.find(u => u.uid === reqUserId);
+                // Vrati novac korisniku u bazu ako je odbijeno
+                const { data: targetUser } = await supabase.from('profiles').select('balance').eq('id', userId).single();
                 if (targetUser) {
-                    targetUser.balance = parseFloat(((targetUser.balance || 0) + amount).toFixed(2));
-                    if (currentUserDoc && currentUserDoc.uid === reqUserId) {
-                        currentUserDoc.balance = targetUser.balance;
-                        localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
-                    }
+                    const restoredBalance = targetUser.balance + amount;
+                    await supabase.from('profiles').update({ balance: restoredBalance }).eq('id', userId);
                 }
             }
-
-            saveLocalState();
-            renderAllData();
-            showToast(`Zahtev je uspešno markiran kao: ${status === 'approved' ? 'Odobren' : 'Odbijen'}.`, "success");
+            loadAdminData();
+            showToast("Zahtev obrađen.", "success");
         };
 
-        function renderProfileData() {
-            if (!currentUserDoc) return;
+        function renderUsersTable(usersList) {
+            const container = document.getElementById('admin-users-table');
+            if (!container) return;
+            container.innerHTML = usersList.map(u => `
+                <tr>
+                    <td class="py-3"><img src="${u.avatar_url || ''}" class="w-8 h-8 rounded-full object-cover"></td>
+                    <td class="py-3 font-semibold text-gray-200">${u.name || 'N/A'}</td>
+                    <td class="py-3 text-gray-400 font-mono text-xs">${u.email}</td>
+                    <td class="py-3 font-bold text-emerald-400">${(u.balance || 0).toFixed(2)} €</td>
+                    <td class="py-3 text-gray-300">${u.ads_watched || 0}</td>
+                    <td class="py-3 text-right"><span class="px-2.5 py-1 bg-gray-800 text-gray-300 rounded-lg text-xs">${u.role || 'user'}</span></td>
+                </tr>
+            `).join('');
+        }
 
-            document.getElementById('profile-display-name').innerText = currentUserDoc.name || 'Korisnik';
-            document.getElementById('profile-display-email').innerText = currentUserDoc.email;
-            document.getElementById('profile-display-role').innerText = currentUserDoc.role === 'admin' ? 'Developer / Admin' : 'VIP Član';
+        function renderProfileData() {
+            if (!currentUserProfile) return;
+            document.getElementById('profile-display-name').innerText = currentUserProfile.name || 'Korisnik';
+            document.getElementById('profile-display-email').innerText = currentUserProfile.email;
+            document.getElementById('profile-display-role').innerText = currentUserProfile.role === 'admin' ? 'Administrator' : 'VIP Član';
 
             const avatarBox = document.getElementById('profile-avatar-display');
-            if (currentUserDoc.avatarUrl) {
-                avatarBox.innerHTML = `<img src="${currentUserDoc.avatarUrl}" class="w-full h-full object-cover">`;
+            if (currentUserProfile.avatar_url) {
+                avatarBox.innerHTML = `<img src="${currentUserProfile.avatar_url}" class="w-full h-full object-cover">`;
             } else {
-                avatarBox.innerHTML = `<span>${(currentUserDoc.name || 'U').charAt(0)}</span>`;
+                avatarBox.innerHTML = `<span>${(currentUserProfile.name || 'U').charAt(0)}</span>`;
             }
 
             const presetsBox = document.getElementById('avatar-presets-box');
             if (presetsBox) {
-                presetsBox.innerHTML = AVATAR_PRESETS.map((url, index) => `
-                    <button onclick="setPresetAvatar('${url}')" class="w-9 h-9 rounded-xl overflow-hidden border-2 ${currentUserDoc.avatarUrl === url ? 'border-brand-500 ring-2 ring-brand-500/30' : 'border-gray-700 hover:border-gray-500'} transition">
+                presetsBox.innerHTML = AVATAR_PRESETS.map(url => `
+                    <button onclick="updateUserAvatar('${url}')" class="w-9 h-9 rounded-xl overflow-hidden border-2 ${currentUserProfile.avatar_url === url ? 'border-brand-500' : 'border-gray-700'} transition">
                         <img src="${url}" class="w-full h-full object-cover">
                     </button>
                 `).join('');
             }
         }
 
-        window.handleAvatarUpload = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (file.size > 2 * 1024 * 1024) {
-                showToast("Slika je prevelika! Maksimalna veličina je 2MB.", "error");
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const base64Url = e.target.result;
-                updateUserAvatar(base64Url);
-            };
-            reader.readAsDataURL(file);
-        };
-
-        window.setPresetAvatar = function(url) {
-            updateUserAvatar(url);
-        };
-
-        function updateUserAvatar(avatarUrl) {
-            if (!currentUserDoc) return;
-            currentUserDoc.avatarUrl = avatarUrl;
-
-            const userIndex = localState.users.findIndex(u => u.uid === currentUserDoc.uid);
-            if (userIndex !== -1) {
-                localState.users[userIndex].avatarUrl = avatarUrl;
-            }
-
-            saveLocalState();
-            localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
-
-            renderNav();
+        window.updateUserAvatar = async function(url) {
+            if (!currentUser) return;
+            await supabase.from('profiles').update({ avatar_url: url }).eq('id', currentUser.id);
+            currentUserProfile.avatar_url = url;
             renderProfileData();
-            renderUsersTable(localState.users);
-            showToast("Slika profila je uspešno ažurirana!", "success");
-        }
-
-        document.getElementById('form-change-password').addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (!currentUserDoc) return;
-
-            const currPass = document.getElementById('pass-current').value;
-            const newPass = document.getElementById('pass-new').value;
-            const confirmPass = document.getElementById('pass-confirm').value;
-
-            if (currPass !== currentUserDoc.password) {
-                showToast("Pogrešna trenutna lozinka!", "error");
-                return;
-            }
-
-            if (newPass !== confirmPass) {
-                showToast("Nova lozinka i potvrda se ne poklapaju!", "error");
-                return;
-            }
-
-            currentUserDoc.password = newPass;
-
-            const userIndex = localState.users.findIndex(u => u.uid === currentUserDoc.uid);
-            if (userIndex !== -1) {
-                localState.users[userIndex].password = newPass;
-            }
-
-            saveLocalState();
-            localStorage.setItem('adearn_session', JSON.stringify(currentUserDoc));
-
-            document.getElementById('pass-current').value = '';
-            document.getElementById('pass-new').value = '';
-            document.getElementById('pass-confirm').value = '';
-
-            showToast("Lozinka je uspešno izmenjena!", "success");
-        });
-
-        window.generateInviteCode = function() {
-            const randomCode = 'VIP-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-            localState.invites.push({
-                id: 'inv-' + Math.random().toString(36).substring(2, 9),
-                code: randomCode,
-                used: false,
-                createdBy: currentUserDoc.email,
-                createdAt: new Date().toISOString()
-            });
-            saveLocalState();
-            renderAllData();
-            showToast(`Generisan novi kod: ${randomCode}`, "success");
+            updateUserUI();
+            showToast("Slika profila ažurirana!", "success");
         };
 
-        function renderInviteCodes(invites) {
-            const container = document.getElementById('invite-codes-list');
-            if (!container) return;
-
-            if (invites.length === 0) {
-                container.innerHTML = `<p class="col-span-full text-center text-gray-500 py-4 text-sm">Nema kodova. Kliknite na dugme iznad da napravite novi.</p>`;
-                return;
+        document.getElementById('form-change-password').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newPass = document.getElementById('pass-new').value;
+            const { error } = await supabase.auth.updateUser({ password: newPass });
+            if (error) {
+                showToast("Greška: " + error.message, "error");
+            } else {
+                document.getElementById('pass-new').value = '';
+                showToast("Lozinka uspešno izmenjena!", "success");
             }
-
-            container.innerHTML = invites.map(inv => `
-                <div class="p-3 bg-gray-950 border border-amber-500/30 ${inv.used ? 'opacity-50' : ''} rounded-xl flex items-center justify-between shadow-sm">
-                    <div>
-                        <span class="font-mono font-bold text-amber-400 tracking-wider block">${inv.code}</span>
-                        <span class="text-[10px] text-gray-400 font-medium">${inv.used ? 'Iskorišćeno (' + (inv.usedBy || 'Korisnik') + ')' : 'Slobodno'}</span>
-                    </div>
-                    <button onclick="navigator.clipboard.writeText('${inv.code}'); showToast('Kod je kopiran!', 'info')" title="Kopiraj kod" class="p-2 text-gray-400 hover:text-white text-xs transition">
-                        <i class="fa-solid fa-copy"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function renderUsersTable(usersList) {
-            const container = document.getElementById('admin-users-table');
-            if (!container) return;
-
-            if (usersList.length === 0) {
-                container.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-gray-500">Nema registrovanih korisnika.</td></tr>`;
-                return;
-            }
-
-            container.innerHTML = usersList.map(u => {
-                const avatarIcon = u.avatarUrl 
-                    ? `<img src="${u.avatarUrl}" class="w-8 h-8 rounded-full object-cover border border-gray-700">`
-                    : `<div class="w-8 h-8 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/30 flex items-center justify-center font-bold text-xs">${(u.name || 'U').charAt(0)}</div>`;
-
-                return `
-                    <tr>
-                        <td class="py-3">${avatarIcon}</td>
-                        <td class="py-3 font-semibold text-gray-200">${u.name || 'N/A'}</td>
-                        <td class="py-3 text-gray-400 font-mono text-xs">${u.email}</td>
-                        <td class="py-3 font-bold text-emerald-400">${(u.balance || 0).toFixed(2)} €</td>
-                        <td class="py-3 text-gray-300">${u.adsWatched || 0}</td>
-                        <td class="py-3 text-right">
-                            <span class="px-2.5 py-1 ${u.role === 'admin' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'bg-gray-800 text-gray-300'} rounded-lg text-xs font-semibold">
-                                ${u.role || 'user'}
-                            </span>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             initTheme();
