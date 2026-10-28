@@ -883,6 +883,7 @@
                 const password = document.getElementById('reg-password').value;
                 const inviteCode = document.getElementById('reg-invite').value.trim().toUpperCase();
 
+                // 1. Provera važenja koda pozivnice
                 const { data: inviteData, error: inviteErr } = await supabaseClient
                     .from('invites')
                     .select('*')
@@ -895,6 +896,7 @@
                     return;
                 }
 
+                // 2. Kreiranje Auth naloga
                 const { data: authData, error: authErr } = await supabaseClient.auth.signUp({ email, password });
                 if (authErr) {
                     showToast("Greška pri registraciji: " + authErr.message, "error");
@@ -909,6 +911,7 @@
 
                 const randomAvatar = AVATAR_PRESETS[Math.floor(Math.random() * AVATAR_PRESETS.length)];
 
+                // 3. Upis u profilnu tabelu
                 const { error: profileErr } = await supabaseClient.from('profiles').insert([{
                     id: userId,
                     name: name,
@@ -924,6 +927,7 @@
                     return;
                 }
 
+                // 4. OZNAČAVANJE KODA KAO ISKORIŠĆENOG U BAZI
                 await supabaseClient.from('invites').update({ used: true, used_by: email }).eq('id', inviteData.id);
 
                 currentUser = authData.user;
