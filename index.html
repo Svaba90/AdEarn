@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="monetag" content="7dbb29f0f003614b99aba7cc0f3bfbc0">
     <title>AdEarn Serbia - VIP PTC Platforma</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -928,15 +927,8 @@
                     return;
                 }
 
-                // 4. OZNAČAVANJE KODA KAO ISKORIŠĆENOG U BAZI (SA LOGOVANJEM GREŠAKA)
-                const { error: updateInviteErr } = await supabaseClient
-                    .from('invites')
-                    .update({ used: true, used_by: email })
-                    .eq('id', inviteData.id);
-
-                if (updateInviteErr) {
-                    console.error("GREŠKA PRI AŽURIRANJU KODA:", updateInviteErr.message);
-                }
+                // 4. OZNAČAVANJE KODA KAO ISKORIŠĆENOG U BAZI
+                await supabaseClient.from('invites').update({ used: true, used_by: email }).eq('id', inviteData.id);
 
                 currentUser = authData.user;
                 await fetchUserProfile();
